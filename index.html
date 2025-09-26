@@ -574,7 +574,10 @@
                 const response = await fetch(webhookUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ test: true })
+                    body: JSON.stringify({ 
+                        user_id: getUserId(),
+                        input: 'ping'  // Simple test message
+                    })
                 });
                 
                 if (response.ok) {
@@ -758,16 +761,15 @@
             showTypingIndicator();
             
             try {
-                // Send message to n8n webhook
+                // Send message to n8n webhook with correct format
                 const response = await fetch(webhookUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        message: message,
-                        timestamp: new Date().toISOString(),
-                        sessionId: getSessionId()
+                        user_id: getUserId(),  // Changed from sessionId to user_id
+                        input: message         // Changed from message to input
                     })
                 });
                 
@@ -780,6 +782,19 @@
                 
                 // Try to get response as text first
                 const responseText = await response.text();
+                
+                // Check if response is empty or blank
+                if (!responseText || responseText.trim() === '') {
+                    addMessage(
+                        `<div class="success-message">
+                            Message received successfully. Processing...
+                        </div>`,
+                        false,
+                        true
+                    );
+                    return;
+                }
+                
                 let data;
                 
                 try {
@@ -790,6 +805,18 @@
                     data = responseText;
                 }
                 
+                // Check if data is empty object or null
+                if (data === null || (typeof data === 'object' && Object.keys(data).length === 0)) {
+                    addMessage(
+                        `<div class="success-message">
+                            Request processed. Awaiting response...
+                        </div>`,
+                        false,
+                        true
+                    );
+                    return;
+                }
+                
                 // Detect response type
                 const responseType = detectResponseType(data);
                 
@@ -798,8 +825,39 @@
                     const htmlContent = processMarkdown(data);
                     addMessage(htmlContent, false, true);
                 } else if (responseType === 'json') {
-                    // Handle different JSON response formats
-                    if (data.patients) {
+                    // Check for common n8n AI Agent response formats
+                    if (data.output) {
+                        // AI Agent response format
+                        if (typeof data.output === 'string') {
+                            const outputType = detectResponseType(data.output);
+                            if (outputType === 'markdown') {
+                                const htmlContent = processMarkdown(data.output);
+                                addMessage(htmlContent, false, true);
+                            } else {
+                                addMessage(data.output, false);
+                            }
+                        } else if (typeof data.output === 'object') {
+                            const formattedData = formatPatientData(data.output);
+                            addMessage(formattedData, false, true);
+                        }
+                    } else if (data.text) {
+                        // Alternative text field
+                        addMessage(data.text, false);
+                    } else if (data.response) {
+                        // Alternative response field
+                        if (typeof data.response === 'string') {
+                            const respType = detectResponseType(data.response);
+                            if (respType === 'markdown') {
+                                const htmlContent = processMarkdown(data.response);
+                                addMessage(htmlContent, false, true);
+                            } else {
+                                addMessage(data.response, false);
+                            }
+                        } else {
+                            const formattedData = formatPatientData(data.response);
+                            addMessage(formattedData, false, true);
+                        }
+                    } else if (data.patients) {
                         // Multiple patients
                         const formattedData = formatPatientData(data.patients);
                         addMessage(formattedData, false, true);
@@ -831,13 +889,35 @@
                         const formattedData = formatPatientData(data);
                         addMessage(formattedData, false, true);
                     } else {
-                        // Generic JSON object - try to format as patient
-                        const formattedData = formatPatientData(data);
-                        addMessage(formattedData, false, true);
+                        // Try to display any available data
+                        const keys = Object.keys(data);
+                        if (keys.length > 0) {
+                            // Try to format as patient or display first non-empty value
+                            let displayed = false;
+                            for (const key of keys) {
+                                if (data[key] && data[key] !== '') {
+                                    if (typeof data[key] === 'string') {
+                                        addMessage(data[key], false);
+                                        displayed = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!displayed) {
+                                const formattedData = formatPatientData(data);
+                                addMessage(formattedData, false, true);
+                            }
+                        } else {
+                            addMessage('Response received', false);
+                        }
                     }
                 } else {
                     // Plain text response
-                    addMessage(data, false);
+                    if (data && data !== '') {
+                        addMessage(data, false);
+                    } else {
+                        addMessage('Message sent successfully', false);
+                    }
                 }
                 
             } catch (error) {
@@ -866,13 +946,19 @@
             }
         }
         
-        function getSessionId() {
-            let sessionId = localStorage.getItem('chatSessionId');
-            if (!sessionId) {
-                sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('chatSessionId', sessionId);
+        function getUserId() {
+            let userId = localStorage.getItem('userId');
+            if (!userId) {
+                // Generate a unique user ID
+                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('userId', userId);
             }
-            return sessionId;
+            return userId;
+        }
+        
+        // Keep the old function for backward compatibility but use getUserId
+        function getSessionId() {
+            return getUserId();
         }
         
         // Initialize
