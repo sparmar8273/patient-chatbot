@@ -837,6 +837,11 @@
                 text.toLowerCase().includes(keyword)
             );
             
+            // Check if it's a table format (pipe-separated with headers)
+            if (text.includes('|') && (text.includes('Name') || text.includes('AGE') || text.includes('MOBILE'))) {
+                return formatTableResponse(text);
+            }
+            
             if (hasPatientData) {
                 return `
                     <div style="background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); 
@@ -850,6 +855,127 @@
             }
             
             return formatStructuredText(text);
+        }
+        
+        function formatTableResponse(text) {
+            // Split the text into lines
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+            
+            // Find the header line (contains | and common headers)
+            let headerIndex = -1;
+            let dataStartIndex = 0;
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                if (line.includes('|') && (line.includes('Name') || line.includes('AGE') || line.includes('MOBILE'))) {
+                    headerIndex = i;
+                    break;
+                }
+            }
+            
+            if (headerIndex === -1) {
+                // No proper header found, treat as regular text
+                return formatStructuredText(text);
+            }
+            
+            // Parse header
+            const headerLine = lines[headerIndex];
+            const headers = headerLine.split('|').map(h => h.trim()).filter(h => h !== '');
+            
+            // Skip separator line if it exists
+            dataStartIndex = headerIndex + 1;
+            if (lines[dataStartIndex] && lines[dataStartIndex].includes('---')) {
+                dataStartIndex++;
+            }
+            
+            // Parse data rows
+            const rows = [];
+            for (let i = dataStartIndex; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line.includes('|') && line !== '') {
+                    const cells = line.split('|').map(cell => cell.trim()).filter(cell => cell !== '');
+                    if (cells.length > 0) {
+                        rows.push(cells);
+                    }
+                }
+            }
+            
+            if (rows.length === 0) {
+                return formatStructuredText(text);
+            }
+            
+            // Build HTML table
+            let html = `
+                <div style="margin: 15px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <table style="width: 100%; border-collapse: collapse; background: white;">
+                        <thead>
+                            <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            `;
+            
+            // Add headers
+            headers.forEach(header => {
+                html += `<th style="padding: 12px 15px; color: white; text-align: left; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">${header}</th>`;
+            });
+            
+            html += `
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            // Add data rows
+            rows.forEach((row, index) => {
+                const rowClass = index % 2 === 0 ? 'even' : 'odd';
+                html += `<tr style="border-bottom: 1px solid #e0e0e0; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='#f8f9ff'" onmouseout="this.style.backgroundColor='${index % 2 === 0 ? '#fff' : '#f9f9f9'}'">`;
+                
+                row.forEach((cell, cellIndex) => {
+                    let cellStyle = "padding: 12px 15px; font-size: 14px; border-bottom: 1px solid #f0f0f0;";
+                    let cellContent = cell;
+                    
+                    // Special formatting for certain columns
+                    if (headers[cellIndex] && headers[cellIndex].toLowerCase().includes('sex')) {
+                        // Format gender with badges
+                        const genderClass = cell.toLowerCase() === 'female' ? 'badge-female' : 'badge-male';
+                        const genderColor = cell.toLowerCase() === 'female' ? '#fce4ec' : '#e3f2fd';
+                        const textColor = cell.toLowerCase() === 'female' ? '#c2185b' : '#1976d2';
+                        cellContent = `<span style="background: ${genderColor}; color: ${textColor}; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;">${cell}</span>`;
+                    } else if (headers[cellIndex] && headers[cellIndex].toLowerCase().includes('email')) {
+                        // Format email as link if it's a valid email
+                        if (cell.includes('@')) {
+                            cellContent = `<a href="mailto:${cell}" style="color: #667eea; text-decoration: none;">${cell}</a>`;
+                        }
+                    } else if (headers[cellIndex] && headers[cellIndex].toLowerCase().includes('age')) {
+                        // Add "years" to age if it's a number
+                        if (!isNaN(cell) && cell !== '' && cell !== '0') {
+                            cellContent = `${cell} years`;
+                        }
+                    }
+                    
+                    html += `<td style="${cellStyle}">${cellContent}</td>`;
+                });
+                
+                html += `</tr>`;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Add summary text if present
+            const summaryLines = lines.filter(line => 
+                !line.includes('|') && 
+                line.trim() !== '' && 
+                !line.includes('---') &&
+                line.toLowerCase().includes('patient')
+            );
+            
+            if (summaryLines.length > 0) {
+                html += `<p style="margin-top: 10px; color: #666; font-style: italic;">${summaryLines.join(' ')}</p>`;
+            }
+            
+            return html;
         }
         
         function parsePatientListResponse(text) {
