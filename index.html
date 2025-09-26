@@ -23,6 +23,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            margin: 0;
         }
         
         .chat-container {
@@ -36,6 +37,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            margin: 10px;
         }
         
         .chat-header {
@@ -58,35 +60,6 @@
         .chat-header .subtitle {
             font-size: 0.9em;
             opacity: 0.9;
-        }
-        
-        .header-buttons {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            display: flex;
-            gap: 8px;
-            z-index: 10;
-        }
-        
-        .header-button {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 6px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-            white-space: nowrap;
-        }
-        
-        .header-button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
         
         .status-indicator {
@@ -136,6 +109,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            border-radius: 0;
         }
         
         .message {
@@ -160,15 +134,21 @@
         }
         
         .message-avatar {
-            width: 40px;
+            min-width: 60px;
+            max-width: 80px;
             height: 40px;
-            border-radius: 50%;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             color: white;
             flex-shrink: 0;
+            font-size: 10px;
+            text-align: center;
+            padding: 2px 4px;
+            word-wrap: break-word;
+            line-height: 1.2;
         }
         
         .bot .message-avatar {
@@ -359,6 +339,7 @@
             padding: 20px;
             background: white;
             border-top: 1px solid #e0e0e0;
+            border-radius: 0 0 20px 20px;
         }
         
         .chat-input-wrapper {
@@ -370,6 +351,7 @@
             padding: 4px;
             border: 2px solid #e0e0e0;
             transition: border-color 0.3s ease;
+            margin: 0;
         }
         
         .chat-input-wrapper:focus-within {
@@ -435,6 +417,8 @@
             gap: 10px;
             margin-top: 15px;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 1000;
         }
         
         .quick-action-btn {
@@ -446,6 +430,8 @@
             cursor: pointer;
             font-size: 13px;
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 1001;
         }
         
         .quick-action-btn:hover {
@@ -567,11 +553,7 @@
 <body>
     <div class="chat-container">
         <div class="chat-header">
-            <div class="header-buttons">
-                <button class="header-button" onclick="toggleSettings()">⚙️ Settings</button>
-                <button class="header-button" onclick="clearChat()">🗑️ Clear Chat</button>
-            </div>
-            <h1>Patient Information Assistant</h1>
+            <h1>AnantKaya Ai+</h1>
             <div class="subtitle">AI-Powered Patient Data Retrieval System</div>
             <div class="status-indicator">
                 <span class="status-dot" id="statusDot"></span>
@@ -581,9 +563,9 @@
         
         <div class="chat-messages" id="chatMessages">
             <div class="message bot">
-                <div class="message-avatar">AI</div>
+                <div class="message-avatar">Ananta</div>
                 <div class="message-content">
-                    <p>Hello! I'm your Patient Information Assistant. I can help you:</p>
+                    <p>Hello! I'm your AnantKaya AI+ Assistant. I can help you:</p>
                     <ul style="margin-top: 10px; margin-left: 20px;">
                         <li>Search for patient records</li>
                         <li>View patient details</li>
@@ -602,6 +584,10 @@
                     class="chat-input" 
                     id="chatInput" 
                     placeholder="Type your message here..."
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
                     onkeypress="handleKeyPress(event)"
                 >
                 <button class="send-button" id="sendButton" onclick="sendMessage()">
@@ -615,6 +601,8 @@
                 <button class="quick-action-btn" onclick="quickAction('Show patient Sanjay Mali')">Search Patient</button>
                 <button class="quick-action-btn" onclick="quickAction('Show recent patients')">Recent Patients</button>
                 <button class="quick-action-btn" onclick="quickAction('Help')">Help</button>
+                <button class="quick-action-btn" onclick="toggleSettings()">⚙️ Settings</button>
+                <button class="quick-action-btn" onclick="clearChat()">🗑️ Clear Chat</button>
             </div>
         </div>
     </div>
@@ -644,9 +632,9 @@
             if (confirm('Are you sure you want to clear the chat history?')) {
                 chatMessages.innerHTML = `
                     <div class="message bot">
-                        <div class="message-avatar">AI</div>
+                        <div class="message-avatar">Ananta</div>
                         <div class="message-content">
-                            <p>Hello! I'm your Patient Information Assistant. I can help you:</p>
+                            <p>Hello! I'm your AnantKaya AI+ Assistant. I can help you:</p>
                             <ul style="margin-top: 10px; margin-left: 20px;">
                                 <li>Search for patient records</li>
                                 <li>View patient details</li>
@@ -712,7 +700,7 @@
             
             const avatar = document.createElement('div');
             avatar.className = 'message-avatar';
-            avatar.textContent = isUser ? 'U' : 'AI';
+            avatar.textContent = isUser ? 'Shukan IVF' : 'Ananta';
             
             const messageContent = document.createElement('div');
             messageContent.className = 'message-content';
@@ -738,7 +726,7 @@
             
             const avatar = document.createElement('div');
             avatar.className = 'message-avatar';
-            avatar.textContent = 'AI';
+            avatar.textContent = 'Ananta';
             
             const typingContent = document.createElement('div');
             typingContent.className = 'typing-indicator active';
