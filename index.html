@@ -662,9 +662,13 @@
         function detectResponseType(data) {
             // Check if it's a string
             if (typeof data === 'string') {
+                // Check if it looks like a pipe-separated table
+                if (data.includes(' | ') && (data.includes('\n') || data.includes('---'))) {
+                    return 'table';
+                }
                 // Check if it looks like markdown (has markdown indicators)
-                if (data.includes('#') || data.includes('*') || data.includes('|') || 
-                    data.includes('```') || data.includes('[') || data.includes('!')) {
+                if (data.includes('#') || data.includes('*') || data.includes('```') || 
+                    data.includes('[') || data.includes('!')) {
                     return 'markdown';
                 }
                 return 'text';
@@ -676,6 +680,107 @@
             }
             
             return 'unknown';
+        }
+        
+        function parseTableResponse(text) {
+            // Parse pipe-separated table format into HTML table
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+            
+            // Check if this is a patient list format
+            if (text.includes('Name') && text.includes('Sex') && text.includes('Age')) {
+                // Find the header line
+                const headerIndex = lines.findIndex(line => line.includes('Name') && line.includes('Sex'));
+                if (headerIndex === -1) return processMarkdown(text);
+                
+                // Parse the header
+                const headers = lines[headerIndex].split('|').map(h => h.trim()).filter(h => h);
+                
+                // Find the separator line (usually with dashes)
+                let dataStartIndex = headerIndex + 1;
+                if (lines[dataStartIndex] && lines[dataStartIndex].includes('---')) {
+                    dataStartIndex++;
+                }
+                
+                // Parse the data rows
+                const patients = [];
+                for (let i = dataStartIndex; i < lines.length; i++) {
+                    const row = lines[i].split('|').map(cell => cell.trim()).filter(cell => cell);
+                    if (row.length > 0) {
+                        const patient = {};
+                        headers.forEach((header, index) => {
+                            if (row[index]) {
+                                patient[header.toLowerCase()] = row[index];
+                            }
+                        });
+                        patients.push(patient);
+                    }
+                }
+                
+                // Format as patient cards
+                if (patients.length > 0) {
+                    let html = '<div style="max-height: 400px; overflow-y: auto;">';
+                    patients.forEach((patient, index) => {
+                        html += formatSinglePatient(patient, patient['#'] || (index + 1));
+                    });
+                    html += '</div>';
+                    return html;
+                }
+            }
+            
+            // If not a patient table, convert to HTML table
+            return convertToHTMLTable(text);
+        }
+        
+        function convertToHTMLTable(text) {
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+            if (lines.length === 0) return text;
+            
+            let html = '<div class="table-container" style="overflow-x: auto; margin: 10px 0;">';
+            html += '<table style="width: 100%; border-collapse: collapse;">';
+            
+            let inHeader = true;
+            let skipNext = false;
+            
+            lines.forEach((line, index) => {
+                // Skip separator lines with dashes
+                if (line.includes('---') && line.includes('|')) {
+                    inHeader = false;
+                    skipNext = false;
+                    return;
+                }
+                
+                if (skipNext) {
+                    skipNext = false;
+                    return;
+                }
+                
+                const cells = line.split('|').map(cell => cell.trim()).filter(cell => cell !== '');
+                
+                if (cells.length > 0) {
+                    html += '<tr>';
+                    cells.forEach(cell => {
+                        if (inHeader) {
+                            html += `<th style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px; text-align: left; font-weight: 600;">${cell}</th>`;
+                        } else {
+                            html += `<td style="padding: 8px 10px; border-bottom: 1px solid #e0e0e0;">${cell}</td>`;
+                        }
+                    });
+                    html += '</tr>';
+                    
+                    // After first row, we're no longer in header
+                    if (inHeader && index === 0) {
+                        // Check if next line is separator
+                        if (lines[index + 1] && lines[index + 1].includes('---')) {
+                            // Stay in header = false will be set when we hit the separator
+                        } else {
+                            inHeader = false;
+                        }
+                    }
+                }
+            });
+            
+            html += '</table></div>';
+            return html;
         }
         
         function processMarkdown(markdown) {
@@ -717,76 +822,64 @@
             const sex = patient.sex || patient.Sex || patient.gender || patient.Gender || '';
             const genderClass = sex?.toLowerCase() === 'female' ? 'badge-female' : 'badge-male';
             
-            // Build the patient card HTML
-            let html = `<div class="patient-card">`;
+            // Build the patient card HTML with gradient style
+            let html = `<div class="patient-card" style="background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-radius: 12px; padding: 15px; margin-top: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">`;
             
             // Add title with name
-            if (number !== null && name !== 'Unknown') {
-                html += `<h3>#${number} - ${name}</h3>`;
-            } else if (number !== null) {
-                html += `<h3>Patient #${number}</h3>`;
+            const displayNumber = patient['#'] || number;
+            if (displayNumber && name !== 'Unknown') {
+                html += `<h3 style="color: #667eea; margin-bottom: 10px; font-size: 1.1em;">#${displayNumber} - ${name}</h3>`;
+            } else if (displayNumber) {
+                html += `<h3 style="color: #667eea; margin-bottom: 10px; font-size: 1.1em;">Patient #${displayNumber}</h3>`;
             } else {
-                html += `<h3>${name}</h3>`;
+                html += `<h3 style="color: #667eea; margin-bottom: 10px; font-size: 1.1em;">${name}</h3>`;
             }
             
-            html += `<div class="patient-info">`;
+            html += `<div class="patient-info" style="display: grid; gap: 8px; font-size: 14px;">`;
             
-            // Only show fields that have values
+            // Define fields to display with proper formatting
             const fields = [
                 { label: 'Gender', value: sex, isGender: true },
                 { label: 'Age', value: patient.age || patient.Age, suffix: ' years' },
                 { label: 'Mobile', value: patient.mobile || patient.Mobile || patient.phone || patient.Phone || patient.contact },
                 { label: 'Email', value: patient.email || patient.Email || patient.mail },
-                { label: 'History', value: patient.history || patient.History || patient.medical_history || patient.notes },
-                { label: 'Address', value: patient.address || patient.Address },
-                { label: 'ID', value: patient.id || patient.ID || patient.patient_id },
-                { label: 'Status', value: patient.status || patient.Status },
-                { label: 'Date', value: patient.date || patient.Date || patient.created_at || patient.updated_at }
+                { label: 'History', value: patient.history || patient.History || patient.medical_history || patient.notes }
             ];
-            
-            // Add any additional fields not in the standard list
-            const standardKeys = ['name', 'Name', 'sex', 'Sex', 'gender', 'Gender', 'age', 'Age', 
-                                 'mobile', 'Mobile', 'phone', 'Phone', 'contact', 'email', 'Email', 
-                                 'mail', 'history', 'History', 'medical_history', 'notes', 'address', 
-                                 'Address', 'id', 'ID', 'patient_id', 'status', 'Status', 'date', 
-                                 'Date', 'created_at', 'updated_at'];
-            
-            // Check for any other fields in the patient object
-            Object.keys(patient).forEach(key => {
-                if (!standardKeys.includes(key) && patient[key] && patient[key] !== '') {
-                    fields.push({
-                        label: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' '),
-                        value: patient[key]
-                    });
-                }
-            });
             
             // Render only fields with values
             fields.forEach(field => {
-                if (field.value && field.value !== '') {
-                    html += `<div class="patient-info-row">`;
-                    html += `<span class="patient-info-label">${field.label}:</span>`;
+                if (field.value && field.value !== '' && field.value !== '---' && field.value !== 'N/A') {
+                    html += `<div class="patient-info-row" style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #f0f0f0;">`;
+                    html += `<span class="patient-info-label" style="font-weight: 600; color: #666;">${field.label}:</span>`;
                     
                     if (field.isGender) {
-                        html += `<span class="patient-info-value">`;
-                        html += `<span class="badge ${genderClass}">${field.value}</span>`;
+                        const badgeStyle = field.value.toLowerCase() === 'female' 
+                            ? 'background-color: #fce4ec; color: #c2185b;' 
+                            : 'background-color: #e3f2fd; color: #1976d2;';
+                        html += `<span class="patient-info-value" style="color: #333;">`;
+                        html += `<span class="badge" style="display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; ${badgeStyle}">${field.value}</span>`;
                         html += `</span>`;
                     } else {
-                        html += `<span class="patient-info-value">${field.value}${field.suffix || ''}</span>`;
+                        html += `<span class="patient-info-value" style="color: #333;">${field.value}${field.suffix || ''}</span>`;
                     }
                     
                     html += `</div>`;
                 }
             });
             
-            // If no fields have values, show raw JSON for debugging
-            if (fields.every(f => !f.value || f.value === '')) {
-                html += `<div class="patient-info-row">`;
-                html += `<span style="font-family: monospace; font-size: 12px; color: #666;">`;
-                html += `${JSON.stringify(patient, null, 2)}`;
-                html += `</span>`;
-                html += `</div>`;
-            }
+            // Check for any additional fields not in the standard list
+            const standardKeys = ['#', 'name', 'Name', 'sex', 'Sex', 'gender', 'Gender', 'age', 'Age', 
+                                 'mobile', 'Mobile', 'phone', 'Phone', 'contact', 'email', 'Email', 
+                                 'mail', 'history', 'History', 'medical_history', 'notes'];
+            
+            Object.keys(patient).forEach(key => {
+                if (!standardKeys.includes(key) && patient[key] && patient[key] !== '' && patient[key] !== '---') {
+                    html += `<div class="patient-info-row" style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #f0f0f0;">`;
+                    html += `<span class="patient-info-label" style="font-weight: 600; color: #666;">${key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}:</span>`;
+                    html += `<span class="patient-info-value" style="color: #333;">${patient[key]}</span>`;
+                    html += `</div>`;
+                }
+            });
             
             html += `</div></div>`;
             
@@ -868,7 +961,11 @@
                 const responseType = detectResponseType(data);
                 
                 // Process based on response type
-                if (responseType === 'markdown') {
+                if (responseType === 'table') {
+                    // Parse and format table response
+                    const htmlContent = parseTableResponse(data);
+                    addMessage(htmlContent, false, true);
+                } else if (responseType === 'markdown') {
                     const htmlContent = processMarkdown(data);
                     addMessage(htmlContent, false, true);
                 } else if (responseType === 'json') {
