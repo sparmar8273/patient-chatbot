@@ -899,10 +899,8 @@
                 
                 const responseData = await response.json();
                 console.log('Response from n8n:', responseData);
-                console.log('Response keys:', Object.keys(responseData));
-                console.log('Response type:', typeof responseData);
                 
-                // Add visual debugging message
+                // Only show debug info if there are actual issues, not for normal responses
                 if (Object.keys(responseData).length === 0) {
                     addMessage(
                         `<div class="error-message">
@@ -932,7 +930,16 @@
                         addMessage(cleanedText, false);
                     }
                 } else if (responseData.output) {
-                    addMessage(responseData.output, false);
+                    // Handle the 'output' field from n8n AI Agent
+                    const outputText = responseData.output;
+                    if (typeof outputText === 'string' && outputText.trim()) {
+                        addMessage(outputText.trim(), false);
+                    } else if (typeof outputText === 'object') {
+                        // If output is an object, try to format it nicely
+                        addMessage(JSON.stringify(outputText, null, 2), false);
+                    } else {
+                        addMessage('Empty response received', false);
+                    }
                 } else if (responseData.message) {
                     addMessage(responseData.message, false);
                 } else if (responseData.response) {
@@ -945,28 +952,29 @@
                 } else if (responseData.result) {
                     addMessage(responseData.result, false);
                 } else {
-                    // Try to find any string field in the response
+                    // Only show debug info if we truly can't find any response data
                     const keys = Object.keys(responseData);
                     let displayed = false;
                     
-                    // Show all available fields for debugging
-                    console.log('Available response fields:', keys.map(key => `${key}: ${typeof responseData[key]}`));
-                    
+                    // Try to find any meaningful response field
                     for (const key of keys) {
-                        if (typeof responseData[key] === 'string' && responseData[key]) {
-                            addMessage(`${key}: ${responseData[key]}`, false);
+                        if (typeof responseData[key] === 'string' && responseData[key].trim()) {
+                            addMessage(responseData[key].trim(), false);
                             displayed = true;
                             break;
                         }
                     }
                     
+                    // Only show debug if we genuinely can't find any content
                     if (!displayed) {
-                        // Show the raw response for debugging
                         addMessage(
                             `<div class="error-message">
-                                <strong>Debug - Raw Response:</strong><br>
-                                <pre style="font-size: 12px; white-space: pre-wrap; margin-top: 10px;">${JSON.stringify(responseData, null, 2)}</pre>
-                                <br><strong>Available fields:</strong> ${keys.join(', ')}
+                                <strong>Unable to display response</strong><br>
+                                The webhook returned data but it's not in a recognized format.<br>
+                                <details style="margin-top: 10px;">
+                                    <summary style="cursor: pointer;">View raw response</summary>
+                                    <pre style="font-size: 12px; white-space: pre-wrap; margin-top: 10px; background: #f5f5f5; padding: 10px; border-radius: 4px;">${JSON.stringify(responseData, null, 2)}</pre>
+                                </details>
                             </div>`,
                             false,
                             true
