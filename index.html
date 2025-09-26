@@ -899,6 +899,22 @@
                 
                 const responseData = await response.json();
                 console.log('Response from n8n:', responseData);
+                console.log('Response keys:', Object.keys(responseData));
+                console.log('Response type:', typeof responseData);
+                
+                // Add visual debugging message
+                if (Object.keys(responseData).length === 0) {
+                    addMessage(
+                        `<div class="error-message">
+                            <strong>Debug Info:</strong><br>
+                            Received empty object from webhook.<br>
+                            Check your n8n workflow output format.
+                        </div>`,
+                        false,
+                        true
+                    );
+                    return;
+                }
                 
                 if (responseData.Output) {
                     const outputText = responseData.Output;
@@ -923,18 +939,38 @@
                     addMessage(responseData.response, false);
                 } else if (responseData.text) {
                     addMessage(responseData.text, false);
+                } else if (responseData.data) {
+                    // Sometimes data is nested in a 'data' field
+                    addMessage(JSON.stringify(responseData.data), false);
+                } else if (responseData.result) {
+                    addMessage(responseData.result, false);
                 } else {
+                    // Try to find any string field in the response
                     const keys = Object.keys(responseData);
                     let displayed = false;
+                    
+                    // Show all available fields for debugging
+                    console.log('Available response fields:', keys.map(key => `${key}: ${typeof responseData[key]}`));
+                    
                     for (const key of keys) {
                         if (typeof responseData[key] === 'string' && responseData[key]) {
-                            addMessage(responseData[key], false);
+                            addMessage(`${key}: ${responseData[key]}`, false);
                             displayed = true;
                             break;
                         }
                     }
+                    
                     if (!displayed) {
-                        addMessage('Response received but no content to display.', false);
+                        // Show the raw response for debugging
+                        addMessage(
+                            `<div class="error-message">
+                                <strong>Debug - Raw Response:</strong><br>
+                                <pre style="font-size: 12px; white-space: pre-wrap; margin-top: 10px;">${JSON.stringify(responseData, null, 2)}</pre>
+                                <br><strong>Available fields:</strong> ${keys.join(', ')}
+                            </div>`,
+                            false,
+                            true
+                        );
                     }
                 }
                 
