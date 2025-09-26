@@ -703,47 +703,94 @@
         }
         
         function formatSinglePatient(patient, number = null) {
-            const genderClass = patient.sex?.toLowerCase() === 'female' ? 'badge-female' : 'badge-male';
+            // Handle if patient is a string
+            if (typeof patient === 'string') {
+                return `<div class="patient-card"><p>${patient}</p></div>`;
+            }
             
-            return `
-                <div class="patient-card">
-                    <h3>${number ? `#${number} - ` : ''}${patient.name || patient.Name || 'Unknown'}</h3>
-                    <div class="patient-info">
-                        ${patient.sex || patient.Sex ? `
-                        <div class="patient-info-row">
-                            <span class="patient-info-label">Gender:</span>
-                            <span class="patient-info-value">
-                                <span class="badge ${genderClass}">${patient.sex || patient.Sex || 'N/A'}</span>
-                            </span>
-                        </div>
-                        ` : ''}
-                        ${patient.age || patient.Age ? `
-                        <div class="patient-info-row">
-                            <span class="patient-info-label">Age:</span>
-                            <span class="patient-info-value">${patient.age || patient.Age} years</span>
-                        </div>
-                        ` : ''}
-                        ${patient.mobile || patient.Mobile ? `
-                        <div class="patient-info-row">
-                            <span class="patient-info-label">Mobile:</span>
-                            <span class="patient-info-value">${patient.mobile || patient.Mobile}</span>
-                        </div>
-                        ` : ''}
-                        ${patient.email || patient.Email ? `
-                        <div class="patient-info-row">
-                            <span class="patient-info-label">Email:</span>
-                            <span class="patient-info-value">${patient.email || patient.Email}</span>
-                        </div>
-                        ` : ''}
-                        ${patient.history || patient.History ? `
-                        <div class="patient-info-row">
-                            <span class="patient-info-label">History:</span>
-                            <span class="patient-info-value">${patient.history || patient.History}</span>
-                        </div>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
+            // Extract name - check multiple possible field names
+            const name = patient.name || patient.Name || patient.patient_name || 
+                        patient.patientName || patient.full_name || patient.fullName || 
+                        patient.title || patient.label || 'Unknown';
+            
+            // Extract gender/sex
+            const sex = patient.sex || patient.Sex || patient.gender || patient.Gender || '';
+            const genderClass = sex?.toLowerCase() === 'female' ? 'badge-female' : 'badge-male';
+            
+            // Build the patient card HTML
+            let html = `<div class="patient-card">`;
+            
+            // Add title with name
+            if (number !== null && name !== 'Unknown') {
+                html += `<h3>#${number} - ${name}</h3>`;
+            } else if (number !== null) {
+                html += `<h3>Patient #${number}</h3>`;
+            } else {
+                html += `<h3>${name}</h3>`;
+            }
+            
+            html += `<div class="patient-info">`;
+            
+            // Only show fields that have values
+            const fields = [
+                { label: 'Gender', value: sex, isGender: true },
+                { label: 'Age', value: patient.age || patient.Age, suffix: ' years' },
+                { label: 'Mobile', value: patient.mobile || patient.Mobile || patient.phone || patient.Phone || patient.contact },
+                { label: 'Email', value: patient.email || patient.Email || patient.mail },
+                { label: 'History', value: patient.history || patient.History || patient.medical_history || patient.notes },
+                { label: 'Address', value: patient.address || patient.Address },
+                { label: 'ID', value: patient.id || patient.ID || patient.patient_id },
+                { label: 'Status', value: patient.status || patient.Status },
+                { label: 'Date', value: patient.date || patient.Date || patient.created_at || patient.updated_at }
+            ];
+            
+            // Add any additional fields not in the standard list
+            const standardKeys = ['name', 'Name', 'sex', 'Sex', 'gender', 'Gender', 'age', 'Age', 
+                                 'mobile', 'Mobile', 'phone', 'Phone', 'contact', 'email', 'Email', 
+                                 'mail', 'history', 'History', 'medical_history', 'notes', 'address', 
+                                 'Address', 'id', 'ID', 'patient_id', 'status', 'Status', 'date', 
+                                 'Date', 'created_at', 'updated_at'];
+            
+            // Check for any other fields in the patient object
+            Object.keys(patient).forEach(key => {
+                if (!standardKeys.includes(key) && patient[key] && patient[key] !== '') {
+                    fields.push({
+                        label: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' '),
+                        value: patient[key]
+                    });
+                }
+            });
+            
+            // Render only fields with values
+            fields.forEach(field => {
+                if (field.value && field.value !== '') {
+                    html += `<div class="patient-info-row">`;
+                    html += `<span class="patient-info-label">${field.label}:</span>`;
+                    
+                    if (field.isGender) {
+                        html += `<span class="patient-info-value">`;
+                        html += `<span class="badge ${genderClass}">${field.value}</span>`;
+                        html += `</span>`;
+                    } else {
+                        html += `<span class="patient-info-value">${field.value}${field.suffix || ''}</span>`;
+                    }
+                    
+                    html += `</div>`;
+                }
+            });
+            
+            // If no fields have values, show raw JSON for debugging
+            if (fields.every(f => !f.value || f.value === '')) {
+                html += `<div class="patient-info-row">`;
+                html += `<span style="font-family: monospace; font-size: 12px; color: #666;">`;
+                html += `${JSON.stringify(patient, null, 2)}`;
+                html += `</span>`;
+                html += `</div>`;
+            }
+            
+            html += `</div></div>`;
+            
+            return html;
         }
         
         async function sendMessage() {
@@ -825,6 +872,9 @@
                     const htmlContent = processMarkdown(data);
                     addMessage(htmlContent, false, true);
                 } else if (responseType === 'json') {
+                    // Log for debugging
+                    console.log('Received JSON response:', data);
+                    
                     // Check for common n8n AI Agent response formats
                     if (data.output) {
                         // AI Agent response format
@@ -837,8 +887,15 @@
                                 addMessage(data.output, false);
                             }
                         } else if (typeof data.output === 'object') {
-                            const formattedData = formatPatientData(data.output);
-                            addMessage(formattedData, false, true);
+                            // If output is an object, try to format it
+                            if (Array.isArray(data.output)) {
+                                const formattedData = formatPatientData(data.output);
+                                addMessage(formattedData, false, true);
+                            } else {
+                                // Single object in output
+                                const formattedData = formatPatientData(data.output);
+                                addMessage(formattedData, false, true);
+                            }
                         }
                     } else if (data.text) {
                         // Alternative text field
@@ -865,6 +922,26 @@
                         // Single patient
                         const formattedData = formatPatientData(data.patient);
                         addMessage(formattedData, false, true);
+                    } else if (data.data) {
+                        // Sometimes n8n wraps response in 'data' field
+                        if (typeof data.data === 'string') {
+                            addMessage(data.data, false);
+                        } else if (Array.isArray(data.data)) {
+                            const formattedData = formatPatientData(data.data);
+                            addMessage(formattedData, false, true);
+                        } else {
+                            const formattedData = formatPatientData(data.data);
+                            addMessage(formattedData, false, true);
+                        }
+                    } else if (data.result || data.results) {
+                        // Alternative result field
+                        const resultData = data.result || data.results;
+                        if (typeof resultData === 'string') {
+                            addMessage(resultData, false);
+                        } else {
+                            const formattedData = formatPatientData(resultData);
+                            addMessage(formattedData, false, true);
+                        }
                     } else if (data.markdown) {
                         // Markdown in JSON
                         const htmlContent = processMarkdown(data.markdown);
@@ -885,27 +962,47 @@
                         // Direct HTML response
                         addMessage(data.html, false, true);
                     } else if (Array.isArray(data)) {
-                        // Array of patients
+                        // Direct array of patients
                         const formattedData = formatPatientData(data);
                         addMessage(formattedData, false, true);
                     } else {
                         // Try to display any available data
                         const keys = Object.keys(data);
                         if (keys.length > 0) {
-                            // Try to format as patient or display first non-empty value
-                            let displayed = false;
-                            for (const key of keys) {
-                                if (data[key] && data[key] !== '') {
-                                    if (typeof data[key] === 'string') {
+                            // Check if it looks like a single patient object
+                            const hasPatientFields = keys.some(key => 
+                                ['name', 'Name', 'patient', 'Patient', 'id', 'ID'].includes(key)
+                            );
+                            
+                            if (hasPatientFields) {
+                                // Format as patient
+                                const formattedData = formatPatientData(data);
+                                addMessage(formattedData, false, true);
+                            } else {
+                                // Try to find and display first string value
+                                let displayed = false;
+                                for (const key of keys) {
+                                    if (data[key] && typeof data[key] === 'string' && data[key] !== '') {
                                         addMessage(data[key], false);
                                         displayed = true;
                                         break;
                                     }
                                 }
-                            }
-                            if (!displayed) {
-                                const formattedData = formatPatientData(data);
-                                addMessage(formattedData, false, true);
+                                
+                                if (!displayed) {
+                                    // Show the raw JSON for debugging
+                                    console.log('Unknown response format:', data);
+                                    addMessage(
+                                        `<div class="patient-card">
+                                            <h3>Response Data</h3>
+                                            <pre style="font-size: 12px; overflow-x: auto;">
+${JSON.stringify(data, null, 2)}
+                                            </pre>
+                                        </div>`,
+                                        false,
+                                        true
+                                    );
+                                }
                             }
                         } else {
                             addMessage('Response received', false);
