@@ -41,7 +41,7 @@
         .chat-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 25px;
+            padding: 25px 25px 20px 25px;
             text-align: center;
             position: relative;
         }
@@ -52,6 +52,7 @@
             letter-spacing: 2px;
             text-transform: uppercase;
             margin-bottom: 5px;
+            margin-top: 10px;
         }
         
         .chat-header .subtitle {
@@ -61,878 +62,45 @@
         
         .header-buttons {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 15px;
+            left: 15px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            z-index: 10;
         }
         
         .header-button {
             background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 6px 10px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
+            font-weight: 500;
             transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            white-space: nowrap;
         }
         
         .header-button:hover {
             background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
         
         .status-indicator {
             position: absolute;
-            top: 25px;
-            right: 25px;
+            top: 15px;
+            right: 15px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.9em;
-        }
-        
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            background-color: #4caf50;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        
-        .status-dot.offline {
-            background-color: #f44336;
-            animation: none;
-        }
-        
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
-            }
-        }
-        
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 30px;
-            background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .message {
-            display: flex;
-            gap: 10px;
-            animation: fadeIn 0.3s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .message.user {
-            justify-content: flex-end;
-        }
-        
-        .message-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-            flex-shrink: 0;
-        }
-        
-        .bot .message-avatar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            order: 0;
-        }
-        
-        .user .message-avatar {
-            background: linear-gradient(135deg, #56ccf2 0%, #2f80ed 100%);
-            order: 1;
-        }
-        
-        .message-content {
-            max-width: 70%;
-            padding: 15px 20px;
-            border-radius: 18px;
-            position: relative;
-            word-wrap: break-word;
-        }
-        
-        .bot .message-content {
-            background: white;
-            color: #333;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            border-bottom-left-radius: 4px;
-        }
-        
-        .user .message-content {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-        
-        /* Beautiful table styling */
-        .styled-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-            font-size: 14px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        .styled-table thead tr {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: left;
-            font-weight: 600;
-        }
-        
-        .styled-table th,
-        .styled-table td {
-            padding: 12px 15px;
-        }
-        
-        .styled-table tbody tr {
-            border-bottom: 1px solid #e0e0e0;
-            transition: all 0.3s ease;
-        }
-        
-        .styled-table tbody tr:last-of-type {
-            border-bottom: none;
-        }
-        
-        .styled-table tbody tr:hover {
-            background-color: #f8f9ff;
-            transform: scale(1.01);
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Patient card styles */
-        .patient-cards-container {
-            max-height: 400px;
-            overflow-y: auto;
-            padding: 10px 0;
-        }
-        
-        .patient-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+            gap: 6px;
+            font-size: 0.85em;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 8px;
             border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 12px;
-            border-left: 4px solid #667eea;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-        }
-        
-        .patient-card:hover {
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transform: translateX(5px);
-        }
-        
-        .patient-card h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-        
-        .patient-info {
-            display: grid;
-            gap: 8px;
-            font-size: 14px;
-        }
-        
-        .patient-info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .patient-info-label {
-            font-weight: 600;
-            color: #666;
-        }
-        
-        .patient-info-value {
-            color: #333;
-        }
-        
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .badge-male {
-            background-color: #e3f2fd;
-            color: #1976d2;
-        }
-        
-        .badge-female {
-            background-color: #fce4ec;
-            color: #c2185b;
-        }
-        
-        .typing-indicator {
-            display: none;
-            padding: 15px 20px;
-            background: white;
-            border-radius: 18px;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            width: fit-content;
-        }
-        
-        .typing-indicator.active {
-            display: block;
-        }
-        
-        .typing-indicator span {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #999;
-            margin: 0 2px;
-            animation: typing 1.4s infinite;
-        }
-        
-        .typing-indicator span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        
-        .typing-indicator span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-        
-        @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-            }
-            30% {
-                transform: translateY(-10px);
-            }
-        }
-        
-        .chat-input-container {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #e0e0e0;
-        }
-        
-        .chat-input-wrapper {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .chat-input {
-            flex: 1;
-            padding: 15px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 30px;
-            font-size: 15px;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-        
-        .chat-input:focus {
-            border-color: #667eea;
-        }
-        
-        .send-button {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s ease;
-        }
-        
-        .send-button:hover {
-            transform: scale(1.1);
-        }
-        
-        .send-button:active {
-            transform: scale(0.95);
-        }
-        
-        .send-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .send-button svg {
-            width: 24px;
-            height: 24px;
-            fill: white;
-        }
-        
-        .quick-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .quick-action-btn {
-            padding: 8px 16px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border: 1px solid #dee2e6;
-            border-radius: 20px;
-            color: #495057;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.3s ease;
-        }
-        
-        .quick-action-btn:hover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .error-message {
-            background-color: #fee;
-            border-left: 4px solid #f44336;
-            color: #d32f2f;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-        
-        .success-message {
-            background-color: #e8f5e9;
-            border-left: 4px solid #4caf50;
-            color: #2e7d32;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-        
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .chat-container {
-                height: 100vh;
-                max-height: none;
-                border-radius: 0;
-            }
-            
-            .message-content {
-                max-width: 85%;
-            }
-            
-            .chat-header h1 {
-                font-size: 1.4em;
-            }
-            
-            .quick-actions {
-                justify-content: center;
-            }
-            
-            .header-buttons {
-                position: static;
-                margin-bottom: 10px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <div class="header-buttons">
-                <button class="header-button" onclick="toggleSettings()">⚙️ Settings</button>
-                <button class="header-button" onclick="clearChat()">🗑️ Clear Chat</button>
-            </div>
-            <h1>Patient Information Assistant</h1>
-            <div class="subtitle">AI-Powered Patient Data Retrieval System</div>
-            <div class="status-indicator">
-                <span class="status-dot" id="statusDot"></span>
-                <span id="statusText">Online</span>
-            </div>
-        </div>
-        
-        <div class="chat-messages" id="chatMessages">
-            <div class="message bot">
-                <div class="message-avatar">AI</div>
-                <div class="message-content">
-                    <p>Hello! I'm your Patient Information Assistant. I can help you:</p>
-                    <ul style="margin-top: 10px; margin-left: 20px;">
-                        <li>Search for patient records</li>
-                        <li>View patient details</li>
-                        <li>List all patients</li>
-                        <li>Filter patients by criteria</li>
-                    </ul>
-                    <p style="margin-top: 10px;">How can I assist you today?</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="chat-input-container">
-            <div class="chat-input-wrapper">
-                <input 
-                    type="text" 
-                    class="chat-input" 
-                    id="chatInput" 
-                    placeholder="Type your message here..."
-                    onkeypress="handleKeyPress(event)"
-                >
-                <button class="send-button" id="sendButton" onclick="sendMessage()">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                    </svg>
-                </button>
-            </div>
-            <div class="quick-actions">
-                <button class="quick-action-btn" onclick="quickAction('List all patients')">List All Patients</button>
-                <button class="quick-action-btn" onclick="quickAction('Show patient Sanjay Mali')">Search Patient</button>
-                <button class="quick-action-btn" onclick="quickAction('Show recent patients')">Recent Patients</button>
-                <button class="quick-action-btn" onclick="quickAction('Help')">Help</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Configuration
-        let webhookUrl = localStorage.getItem('webhookUrl') || 'https://anantkaya.app.n8n.cloud/webhook/b4b54f90-e90c-4afb-b85f-c0221d39bd3b';
-        const chatMessages = document.getElementById('chatMessages');
-        const chatInput = document.getElementById('chatInput');
-        const sendButton = document.getElementById('sendButton');
-        const statusDot = document.getElementById('statusDot');
-        const statusText = document.getElementById('statusText');
-        
-        // Settings management
-        function toggleSettings() {
-            const currentUrl = prompt('Enter n8n Webhook URL:', webhookUrl);
-            if (currentUrl && currentUrl.trim()) {
-                webhookUrl = currentUrl.trim();
-                localStorage.setItem('webhookUrl', webhookUrl);
-                alert('Webhook URL updated successfully!');
-            }
-        }
-        
-        // Clear chat function
-        function clearChat() {
-            if (confirm('Are you sure you want to clear the chat history?')) {
-                chatMessages.innerHTML = `
-                    <div class="message bot">
-                        <div class="message-avatar">AI</div>
-                        <div class="message-content">
-                            <p>Hello! I'm your Patient Information Assistant. I can help you:</p>
-                            <ul style="margin-top: 10px; margin-left: 20px;">
-                                <li>Search for patient records</li>
-                                <li>View patient details</li>
-                                <li>List all patients</li>
-                                <li>Filter patients by criteria</li>
-                            </ul>
-                            <p style="margin-top: 10px;">How can I assist you today?</p>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-        
-        function handleKeyPress(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendMessage();
-            }
-        }
-        
-        function quickAction(action) {
-            chatInput.value = action;
-            sendMessage();
-        }
-        
-        function getUserId() {
-            let userId = localStorage.getItem('userId');
-            if (!userId) {
-                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('userId', userId);
-            }
-            return userId;
-        }
-        
-        function addMessage(content, isUser = false, isHTML = false) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
-            
-            const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            avatar.textContent = isUser ? 'U' : 'AI';
-            
-            const messageContent = document.createElement('div');
-            messageContent.className = 'message-content';
-            
-            if (isHTML) {
-                messageContent.innerHTML = content;
-            } else {
-                messageContent.textContent = content;
-            }
-            
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(messageContent);
-            chatMessages.appendChild(messageDiv);
-            
-            // Scroll to bottom
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            
-            return messageContent;
-        }
-        
-        function showTypingIndicator() {
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message bot';
-            typingDiv.id = 'typingIndicator';
-            
-            const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            avatar.textContent = 'AI';
-            
-            const typingContent = document.createElement('div');
-            typingContent.className = 'typing-indicator active';
-            typingContent.innerHTML = '<span></span><span></span><span></span>';
-            
-            typingDiv.appendChild(avatar);
-            typingDiv.appendChild(typingContent);
-            chatMessages.appendChild(typingDiv);
-            
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-        
-        function removeTypingIndicator() {
-            const typingIndicator = document.getElementById('typingIndicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
-        }
-        
-        function parsePatientListResponse(text) {
-            // Remove "Output:" prefix if present
-            text = text.replace(/^Output:\s*/i, '');
-            
-            // Parse pipe-separated patient list
-            const lines = text.split('\n').filter(line => line.trim() !== '');
-            const patients = [];
-            
-            for (let line of lines) {
-                // Skip header indicators
-                if (line.includes('---') || line.toLowerCase().includes('here is the list')) continue;
-                
-                // Parse patient data from pipe-separated format
-                const parts = line.split('|').map(p => p.trim()).filter(p => p !== '');
-                
-                if (parts.length >= 3) {
-                    // Check if this is a header row
-                    if (parts[0] === '#' || parts[1] === 'Name') continue;
-                    
-                    const patient = {
-                        number: parts[0],
-                        name: parts[1],
-                        sex: parts[2],
-                        age: parts[3] || '',
-                        mobile: parts[4] || '',
-                        email: parts[5] || '',
-                        history: parts[6] || ''
-                    };
-                    patients.push(patient);
-                }
-            }
-            
-            // Also check for additional text after the table
-            const additionalInfo = lines.find(line => 
-                line.toLowerCase().includes('please specify') || 
-                line.toLowerCase().includes('along with')
-            );
-            
-            return { patients, additionalInfo };
-        }
-        
-        function formatPatientCards(patients, additionalInfo = null) {
-            if (patients.length === 0) return '<p>No patient data found.</p>';
-            
-            let html = '<div class="patient-cards-container">';
-            
-            patients.forEach(patient => {
-                const genderClass = patient.sex?.toLowerCase() === 'female' ? 'badge-female' : 'badge-male';
-                
-                html += `
-                    <div class="patient-card">
-                        <h3>${patient.name}</h3>
-                        <div class="patient-info">
-                `;
-                
-                // Only show fields with values
-                if (patient.sex) {
-                    html += `
-                        <div class="patient-info-row">
-                            <span class="patient-info-label">Gender:</span>
-                            <span class="patient-info-value">
-                                <span class="badge ${genderClass}">${patient.sex}</span>
-                            </span>
-                        </div>
-                    `;
-                }
-                
-                if (patient.age) {
-                    html += `
-                        <div class="patient-info-row">
-                            <span class="patient-info-label">Age:</span>
-                            <span class="patient-info-value">${patient.age} years</span>
-                        </div>
-                    `;
-                }
-                
-                if (patient.mobile) {
-                    html += `
-                        <div class="patient-info-row">
-                            <span class="patient-info-label">Mobile:</span>
-                            <span class="patient-info-value">${patient.mobile}</span>
-                        </div>
-                    `;
-                }
-                
-                if (patient.email && patient.email !== '---') {
-                    html += `
-                        <div class="patient-info-row">
-                            <span class="patient-info-label">Email:</span>
-                            <span class="patient-info-value">${patient.email}</span>
-                        </div>
-                    `;
-                }
-                
-                if (patient.history && patient.history !== '---') {
-                    html += `
-                        <div class="patient-info-row">
-                            <span class="patient-info-label">History:</span>
-                            <span class="patient-info-value">${patient.history}</span>
-                        </div>
-                    `;
-                }
-                
-                html += `
-                        </div>
-                    </div>
-                `;
-            });
-            
-            html += '</div>';
-            
-            if (additionalInfo) {
-                html += `<p style="margin-top: 15px; font-style: italic; color: #666;">${additionalInfo}</p>`;
-            }
-            
-            return html;
-        }
-        
-        async function sendMessage() {
-            const message = chatInput.value.trim();
-            if (!message) return;
-            
-            // Disable send button
-            sendButton.disabled = true;
-            
-            // Add user message
-            addMessage(message, true);
-            chatInput.value = '';
-            
-            // Show typing indicator
-            showTypingIndicator();
-            
-            try {
-                // Send message to n8n webhook
-                const response = await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        user_id: getUserId(),
-                        input: message
-                    })
-                });
-                
-                removeTypingIndicator();
-                sendButton.disabled = false;
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                // Get response data
-                const responseData = await response.json();
-                console.log('Response from n8n:', responseData);
-                
-                // Check if Output field exists (n8n response format)
-                if (responseData.Output) {
-                    const outputText = responseData.Output;
-                    
-                    // Check if this looks like a patient list
-                    if (outputText.includes('|') && outputText.includes('Name')) {
-                        const { patients, additionalInfo } = parsePatientListResponse(outputText);
-                        if (patients.length > 0) {
-                            const formattedHTML = formatPatientCards(patients, additionalInfo);
-                            addMessage(formattedHTML, false, true);
-                        } else {
-                            // If no patients parsed, show the raw text nicely formatted
-                            addMessage(outputText.replace(/^Output:\s*/i, ''), false);
-                        }
-                    } else {
-                        // Regular text response - clean it up
-                        const cleanedText = outputText.replace(/^Output:\s*/i, '');
-                        addMessage(cleanedText, false);
-                    }
-                } else if (responseData.output) {
-                    // Alternative output field (lowercase)
-                    addMessage(responseData.output, false);
-                } else if (responseData.message) {
-                    addMessage(responseData.message, false);
-                } else if (responseData.response) {
-                    addMessage(responseData.response, false);
-                } else if (responseData.text) {
-                    addMessage(responseData.text, false);
-                } else {
-                    // Try to find any text field in the response
-                    const keys = Object.keys(responseData);
-                    let displayed = false;
-                    for (const key of keys) {
-                        if (typeof responseData[key] === 'string' && responseData[key]) {
-                            addMessage(responseData[key], false);
-                            displayed = true;
-                            break;
-                        }
-                    }
-                    if (!displayed) {
-                        addMessage('Response received but no content to display.', false);
-                    }
-                }
-                
-            } catch (error) {
-                removeTypingIndicator();
-                sendButton.disabled = false;
-                console.error('Error:', error);
-                
-                addMessage(
-                    `<div class="error-message">
-                        <strong>Connection Error:</strong><br>
-                        Unable to connect to the webhook. Please check:
-                        <ul style="margin-top: 10px; margin-left: 20px;">
-                            <li>Webhook URL is correct</li>
-                            <li>n8n workflow is active</li>
-                            <li>CORS is enabled in n8n</li>
-                        </ul>
-                    </div>`,
-                    false,
-                    true
-                );
-            }
-        }
-        
-        // Initialize
-        window.onload = function() {
-            chatInput.focus();
-            // Set initial status
-            statusDot.classList.remove('offline');
-            statusText.textContent = 'Online';
-        };
-    </script>
-</body>
-</html>
-    
-    <!-- Marked.js for Markdown parsing -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .chat-container {
-            width: 100%;
-            max-width: 900px;
-            height: 85vh;
-            max-height: 700px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            text-align: center;
-            position: relative;
-        }
-        
-        .chat-header h1 {
-            font-size: 1.8em;
-            font-weight: 300;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-        
-        .chat-header .subtitle {
-            font-size: 0.9em;
-            opacity: 0.9;
-        }
-        
-        .status-indicator {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9em;
+            backdrop-filter: blur(5px);
         }
         
         .status-dot {
@@ -1069,22 +237,6 @@
             background-color: #f8f9ff;
         }
         
-        .message-content code {
-            background-color: #f4f4f4;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-        }
-        
-        .message-content pre {
-            background-color: #f4f4f4;
-            padding: 15px;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 10px 0;
-        }
-        
         .message-content ul, .message-content ol {
             margin-left: 20px;
             margin-top: 10px;
@@ -1094,12 +246,72 @@
             margin: 5px 0;
         }
         
-        .message-content blockquote {
+        /* Patient card styles */
+        .patient-cards-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+        
+        .patient-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
             border-left: 4px solid #667eea;
-            padding-left: 15px;
-            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .patient-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+        }
+        
+        .patient-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .patient-info {
+            display: grid;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .patient-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .patient-info-label {
+            font-weight: 600;
             color: #666;
-            font-style: italic;
+        }
+        
+        .patient-info-value {
+            color: #333;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-male {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .badge-female {
+            background-color: #fce4ec;
+            color: #c2185b;
         }
         
         .typing-indicator {
@@ -1151,27 +363,37 @@
         
         .chat-input-wrapper {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
+            background: #f8f9fa;
+            border-radius: 25px;
+            padding: 4px;
+            border: 2px solid #e0e0e0;
+            transition: border-color 0.3s ease;
+        }
+        
+        .chat-input-wrapper:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
         
         .chat-input {
             flex: 1;
-            padding: 15px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 30px;
+            padding: 14px 18px;
+            border: none;
+            background: transparent;
             font-size: 15px;
             outline: none;
-            transition: border-color 0.3s ease;
+            color: #333;
         }
         
-        .chat-input:focus {
-            border-color: #667eea;
+        .chat-input::placeholder {
+            color: #999;
         }
         
         .send-button {
-            width: 50px;
-            height: 50px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
@@ -1180,11 +402,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s ease;
+            transition: all 0.2s ease;
+            margin-right: 2px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
         
         .send-button:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
         
         .send-button:active {
@@ -1194,12 +419,15 @@
         .send-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
         }
         
         .send-button svg {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             fill: white;
+            transform: translateX(1px);
         }
         
         .quick-actions {
@@ -1228,61 +456,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         
-        /* Patient data display styles */
-        .patient-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
-            border-radius: 12px;
-            padding: 15px;
-            margin-top: 10px;
-            border-left: 4px solid #667eea;
-        }
-        
-        .patient-card h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-        
-        .patient-info {
-            display: grid;
-            gap: 8px;
-            font-size: 14px;
-        }
-        
-        .patient-info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .patient-info-label {
-            font-weight: 600;
-            color: #666;
-        }
-        
-        .patient-info-value {
-            color: #333;
-        }
-        
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .badge-male {
-            background-color: #e3f2fd;
-            color: #1976d2;
-        }
-        
-        .badge-female {
-            background-color: #fce4ec;
-            color: #c2185b;
-        }
-        
         .error-message {
             background-color: #fee;
             border-left: 4px solid #f44336;
@@ -1301,63 +474,92 @@
             margin-top: 10px;
         }
         
-        /* Loading animation */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(102, 126, 234, 0.3);
-            border-radius: 50%;
-            border-top-color: #667eea;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Connection settings modal */
-        .settings-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-        
-        .settings-button:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
         /* Responsive design */
         @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+            
             .chat-container {
                 height: 100vh;
                 max-height: none;
                 border-radius: 0;
             }
             
-            .message-content {
-                max-width: 85%;
+            .chat-header {
+                padding: 15px 15px 20px 15px;
             }
             
             .chat-header h1 {
-                font-size: 1.4em;
+                font-size: 1.3em;
+                margin-top: 25px;
+            }
+            
+            .header-buttons {
+                position: static;
+                justify-content: center;
+                margin-bottom: 15px;
+                gap: 10px;
+            }
+            
+            .header-button {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+            
+            .status-indicator {
+                position: static;
+                justify-content: center;
+                margin-top: 10px;
+                background: rgba(255, 255, 255, 0.15);
+                align-self: center;
+                width: fit-content;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            .message-content {
+                max-width: 85%;
             }
             
             .quick-actions {
                 justify-content: center;
             }
             
-            .settings-button {
-                position: static;
-                margin-bottom: 10px;
+            .chat-input-container {
+                padding: 15px;
+            }
+            
+            .send-button {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .send-button svg {
+                width: 18px;
+                height: 18px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header-buttons {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .header-button {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+            
+            .chat-header h1 {
+                font-size: 1.1em;
+                margin-top: 10px;
+            }
+            
+            .quick-action-btn {
+                font-size: 12px;
+                padding: 6px 12px;
             }
         }
     </style>
@@ -1365,7 +567,10 @@
 <body>
     <div class="chat-container">
         <div class="chat-header">
-            <button class="settings-button" onclick="toggleSettings()">⚙️ Settings</button>
+            <div class="header-buttons">
+                <button class="header-button" onclick="toggleSettings()">⚙️ Settings</button>
+                <button class="header-button" onclick="clearChat()">🗑️ Clear Chat</button>
+            </div>
             <h1>Patient Information Assistant</h1>
             <div class="subtitle">AI-Powered Patient Data Retrieval System</div>
             <div class="status-indicator">
@@ -1434,6 +639,27 @@
             }
         }
         
+        // Clear chat function
+        function clearChat() {
+            if (confirm('Are you sure you want to clear the chat history?')) {
+                chatMessages.innerHTML = `
+                    <div class="message bot">
+                        <div class="message-avatar">AI</div>
+                        <div class="message-content">
+                            <p>Hello! I'm your Patient Information Assistant. I can help you:</p>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Search for patient records</li>
+                                <li>View patient details</li>
+                                <li>List all patients</li>
+                                <li>Filter patients by criteria</li>
+                            </ul>
+                            <p style="margin-top: 10px;">How can I assist you today?</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
         // Connection status check
         async function checkConnection() {
             try {
@@ -1442,7 +668,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         user_id: getUserId(),
-                        input: 'ping'  // Simple test message
+                        input: 'ping'
                     })
                 });
                 
@@ -1471,6 +697,15 @@
             sendMessage();
         }
         
+        function getUserId() {
+            let userId = localStorage.getItem('userId');
+            if (!userId) {
+                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('userId', userId);
+            }
+            return userId;
+        }
+        
         function addMessage(content, isUser = false, isHTML = false) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
@@ -1492,9 +727,7 @@
             messageDiv.appendChild(messageContent);
             chatMessages.appendChild(messageDiv);
             
-            // Scroll to bottom
             chatMessages.scrollTop = chatMessages.scrollHeight;
-            
             return messageContent;
         }
         
@@ -1525,229 +758,113 @@
             }
         }
         
-        function detectResponseType(data) {
-            // Check if it's a string
-            if (typeof data === 'string') {
-                // Check if it looks like a pipe-separated table
-                if (data.includes(' | ') && (data.includes('\n') || data.includes('---'))) {
-                    return 'table';
-                }
-                // Check if it looks like markdown (has markdown indicators)
-                if (data.includes('#') || data.includes('*') || data.includes('```') || 
-                    data.includes('[') || data.includes('!')) {
-                    return 'markdown';
-                }
-                return 'text';
-            }
+        function parsePatientListResponse(text) {
+            text = text.replace(/^Output:\s*/i, '');
             
-            // Check if it's JSON object
-            if (typeof data === 'object' && data !== null) {
-                return 'json';
-            }
-            
-            return 'unknown';
-        }
-        
-        function parseTableResponse(text) {
-            // Parse pipe-separated table format into HTML table
             const lines = text.split('\n').filter(line => line.trim() !== '');
+            const patients = [];
             
-            // Check if this is a patient list format
-            if (text.includes('Name') && text.includes('Sex') && text.includes('Age')) {
-                // Find the header line
-                const headerIndex = lines.findIndex(line => line.includes('Name') && line.includes('Sex'));
-                if (headerIndex === -1) return processMarkdown(text);
+            for (let line of lines) {
+                if (line.includes('---') || line.toLowerCase().includes('here is the list')) continue;
                 
-                // Parse the header
-                const headers = lines[headerIndex].split('|').map(h => h.trim()).filter(h => h);
+                const parts = line.split('|').map(p => p.trim()).filter(p => p !== '');
                 
-                // Find the separator line (usually with dashes)
-                let dataStartIndex = headerIndex + 1;
-                if (lines[dataStartIndex] && lines[dataStartIndex].includes('---')) {
-                    dataStartIndex++;
-                }
-                
-                // Parse the data rows
-                const patients = [];
-                for (let i = dataStartIndex; i < lines.length; i++) {
-                    const row = lines[i].split('|').map(cell => cell.trim()).filter(cell => cell);
-                    if (row.length > 0) {
-                        const patient = {};
-                        headers.forEach((header, index) => {
-                            if (row[index]) {
-                                patient[header.toLowerCase()] = row[index];
-                            }
-                        });
-                        patients.push(patient);
-                    }
-                }
-                
-                // Format as patient cards
-                if (patients.length > 0) {
-                    let html = '<div style="max-height: 400px; overflow-y: auto;">';
-                    patients.forEach((patient, index) => {
-                        html += formatSinglePatient(patient, patient['#'] || (index + 1));
-                    });
-                    html += '</div>';
-                    return html;
+                if (parts.length >= 3) {
+                    if (parts[0] === '#' || parts[1] === 'Name') continue;
+                    
+                    const patient = {
+                        number: parts[0],
+                        name: parts[1],
+                        sex: parts[2],
+                        age: parts[3] || '',
+                        mobile: parts[4] || '',
+                        email: parts[5] || '',
+                        history: parts[6] || ''
+                    };
+                    patients.push(patient);
                 }
             }
             
-            // If not a patient table, convert to HTML table
-            return convertToHTMLTable(text);
+            const additionalInfo = lines.find(line => 
+                line.toLowerCase().includes('please specify') || 
+                line.toLowerCase().includes('along with')
+            );
+            
+            return { patients, additionalInfo };
         }
         
-        function convertToHTMLTable(text) {
-            const lines = text.split('\n').filter(line => line.trim() !== '');
-            if (lines.length === 0) return text;
+        function formatPatientCards(patients, additionalInfo = null) {
+            if (patients.length === 0) return '<p>No patient data found.</p>';
             
-            let html = '<div class="table-container" style="overflow-x: auto; margin: 10px 0;">';
-            html += '<table style="width: 100%; border-collapse: collapse;">';
+            let html = '<div class="patient-cards-container">';
             
-            let inHeader = true;
-            let skipNext = false;
-            
-            lines.forEach((line, index) => {
-                // Skip separator lines with dashes
-                if (line.includes('---') && line.includes('|')) {
-                    inHeader = false;
-                    skipNext = false;
-                    return;
+            patients.forEach(patient => {
+                const genderClass = patient.sex?.toLowerCase() === 'female' ? 'badge-female' : 'badge-male';
+                
+                html += `
+                    <div class="patient-card">
+                        <h3>${patient.name}</h3>
+                        <div class="patient-info">
+                `;
+                
+                if (patient.sex) {
+                    html += `
+                        <div class="patient-info-row">
+                            <span class="patient-info-label">Gender:</span>
+                            <span class="patient-info-value">
+                                <span class="badge ${genderClass}">${patient.sex}</span>
+                            </span>
+                        </div>
+                    `;
                 }
                 
-                if (skipNext) {
-                    skipNext = false;
-                    return;
+                if (patient.age) {
+                    html += `
+                        <div class="patient-info-row">
+                            <span class="patient-info-label">Age:</span>
+                            <span class="patient-info-value">${patient.age} years</span>
+                        </div>
+                    `;
                 }
                 
-                const cells = line.split('|').map(cell => cell.trim()).filter(cell => cell !== '');
-                
-                if (cells.length > 0) {
-                    html += '<tr>';
-                    cells.forEach(cell => {
-                        if (inHeader) {
-                            html += `<th style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px; text-align: left; font-weight: 600;">${cell}</th>`;
-                        } else {
-                            html += `<td style="padding: 8px 10px; border-bottom: 1px solid #e0e0e0;">${cell}</td>`;
-                        }
-                    });
-                    html += '</tr>';
-                    
-                    // After first row, we're no longer in header
-                    if (inHeader && index === 0) {
-                        // Check if next line is separator
-                        if (lines[index + 1] && lines[index + 1].includes('---')) {
-                            // Stay in header = false will be set when we hit the separator
-                        } else {
-                            inHeader = false;
-                        }
-                    }
+                if (patient.mobile) {
+                    html += `
+                        <div class="patient-info-row">
+                            <span class="patient-info-label">Mobile:</span>
+                            <span class="patient-info-value">${patient.mobile}</span>
+                        </div>
+                    `;
                 }
+                
+                if (patient.email && patient.email !== '---') {
+                    html += `
+                        <div class="patient-info-row">
+                            <span class="patient-info-label">Email:</span>
+                            <span class="patient-info-value">${patient.email}</span>
+                        </div>
+                    `;
+                }
+                
+                if (patient.history && patient.history !== '---') {
+                    html += `
+                        <div class="patient-info-row">
+                            <span class="patient-info-label">History:</span>
+                            <span class="patient-info-value">${patient.history}</span>
+                        </div>
+                    `;
+                }
+                
+                html += `
+                        </div>
+                    </div>
+                `;
             });
             
-            html += '</table></div>';
-            return html;
-        }
-        
-        function processMarkdown(markdown) {
-            // Parse markdown to HTML using marked.js
-            const html = marked.parse(markdown);
-            return html;
-        }
-        
-        function formatPatientData(data) {
-            // Check if data is an array of patients
-            if (Array.isArray(data)) {
-                let html = '<div style="max-height: 400px; overflow-y: auto;">';
-                data.forEach((patient, index) => {
-                    html += formatSinglePatient(patient, index + 1);
-                });
-                html += '</div>';
-                return html;
-            } else if (typeof data === 'object' && data !== null) {
-                // Single patient object
-                return formatSinglePatient(data);
-            } else {
-                // Plain text response
-                return `<p>${data}</p>`;
+            html += '</div>';
+            
+            if (additionalInfo) {
+                html += `<p style="margin-top: 15px; font-style: italic; color: #666;">${additionalInfo}</p>`;
             }
-        }
-        
-        function formatSinglePatient(patient, number = null) {
-            // Handle if patient is a string
-            if (typeof patient === 'string') {
-                return `<div class="patient-card"><p>${patient}</p></div>`;
-            }
-            
-            // Extract name - check multiple possible field names
-            const name = patient.name || patient.Name || patient.patient_name || 
-                        patient.patientName || patient.full_name || patient.fullName || 
-                        patient.title || patient.label || 'Unknown';
-            
-            // Extract gender/sex
-            const sex = patient.sex || patient.Sex || patient.gender || patient.Gender || '';
-            const genderClass = sex?.toLowerCase() === 'female' ? 'badge-female' : 'badge-male';
-            
-            // Build the patient card HTML with gradient style
-            let html = `<div class="patient-card" style="background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-radius: 12px; padding: 15px; margin-top: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">`;
-            
-            // Add title with name
-            const displayNumber = patient['#'] || number;
-            if (displayNumber && name !== 'Unknown') {
-                html += `<h3 style="color: #667eea; margin-bottom: 10px; font-size: 1.1em;">#${displayNumber} - ${name}</h3>`;
-            } else if (displayNumber) {
-                html += `<h3 style="color: #667eea; margin-bottom: 10px; font-size: 1.1em;">Patient #${displayNumber}</h3>`;
-            } else {
-                html += `<h3 style="color: #667eea; margin-bottom: 10px; font-size: 1.1em;">${name}</h3>`;
-            }
-            
-            html += `<div class="patient-info" style="display: grid; gap: 8px; font-size: 14px;">`;
-            
-            // Define fields to display with proper formatting
-            const fields = [
-                { label: 'Gender', value: sex, isGender: true },
-                { label: 'Age', value: patient.age || patient.Age, suffix: ' years' },
-                { label: 'Mobile', value: patient.mobile || patient.Mobile || patient.phone || patient.Phone || patient.contact },
-                { label: 'Email', value: patient.email || patient.Email || patient.mail },
-                { label: 'History', value: patient.history || patient.History || patient.medical_history || patient.notes }
-            ];
-            
-            // Render only fields with values
-            fields.forEach(field => {
-                if (field.value && field.value !== '' && field.value !== '---' && field.value !== 'N/A') {
-                    html += `<div class="patient-info-row" style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #f0f0f0;">`;
-                    html += `<span class="patient-info-label" style="font-weight: 600; color: #666;">${field.label}:</span>`;
-                    
-                    if (field.isGender) {
-                        const badgeStyle = field.value.toLowerCase() === 'female' 
-                            ? 'background-color: #fce4ec; color: #c2185b;' 
-                            : 'background-color: #e3f2fd; color: #1976d2;';
-                        html += `<span class="patient-info-value" style="color: #333;">`;
-                        html += `<span class="badge" style="display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; ${badgeStyle}">${field.value}</span>`;
-                        html += `</span>`;
-                    } else {
-                        html += `<span class="patient-info-value" style="color: #333;">${field.value}${field.suffix || ''}</span>`;
-                    }
-                    
-                    html += `</div>`;
-                }
-            });
-            
-            // Check for any additional fields not in the standard list
-            const standardKeys = ['#', 'name', 'Name', 'sex', 'Sex', 'gender', 'Gender', 'age', 'Age', 
-                                 'mobile', 'Mobile', 'phone', 'Phone', 'contact', 'email', 'Email', 
-                                 'mail', 'history', 'History', 'medical_history', 'notes'];
-            
-            Object.keys(patient).forEach(key => {
-                if (!standardKeys.includes(key) && patient[key] && patient[key] !== '' && patient[key] !== '---') {
-                    html += `<div class="patient-info-row" style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #f0f0f0;">`;
-                    html += `<span class="patient-info-label" style="font-weight: 600; color: #666;">${key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}:</span>`;
-                    html += `<span class="patient-info-value" style="color: #333;">${patient[key]}</span>`;
-                    html += `</div>`;
-                }
-            });
-            
-            html += `</div></div>`;
             
             return html;
         }
@@ -1756,26 +873,20 @@
             const message = chatInput.value.trim();
             if (!message) return;
             
-            // Disable send button
             sendButton.disabled = true;
-            
-            // Add user message
             addMessage(message, true);
             chatInput.value = '';
-            
-            // Show typing indicator
             showTypingIndicator();
             
             try {
-                // Send message to n8n webhook with correct format
                 const response = await fetch(webhookUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        user_id: getUserId(),  // Changed from sessionId to user_id
-                        input: message         // Changed from message to input
+                        user_id: getUserId(),
+                        input: message
                     })
                 });
                 
@@ -1786,197 +897,44 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                // Try to get response as text first
-                const responseText = await response.text();
+                const responseData = await response.json();
+                console.log('Response from n8n:', responseData);
                 
-                // Check if response is empty or blank
-                if (!responseText || responseText.trim() === '') {
-                    addMessage(
-                        `<div class="success-message">
-                            Message received successfully. Processing...
-                        </div>`,
-                        false,
-                        true
-                    );
-                    return;
-                }
-                
-                let data;
-                
-                try {
-                    // Try to parse as JSON
-                    data = JSON.parse(responseText);
-                } catch (e) {
-                    // If not JSON, treat as text/markdown
-                    data = responseText;
-                }
-                
-                // Check if data is empty object or null
-                if (data === null || (typeof data === 'object' && Object.keys(data).length === 0)) {
-                    addMessage(
-                        `<div class="success-message">
-                            Request processed. Awaiting response...
-                        </div>`,
-                        false,
-                        true
-                    );
-                    return;
-                }
-                
-                // Detect response type
-                const responseType = detectResponseType(data);
-                
-                // Process based on response type
-                if (responseType === 'table') {
-                    // Parse and format table response
-                    const htmlContent = parseTableResponse(data);
-                    addMessage(htmlContent, false, true);
-                } else if (responseType === 'markdown') {
-                    const htmlContent = processMarkdown(data);
-                    addMessage(htmlContent, false, true);
-                } else if (responseType === 'json') {
-                    // Log for debugging
-                    console.log('Received JSON response:', data);
+                if (responseData.Output) {
+                    const outputText = responseData.Output;
                     
-                    // Check for common n8n AI Agent response formats
-                    if (data.output) {
-                        // AI Agent response format
-                        if (typeof data.output === 'string') {
-                            const outputType = detectResponseType(data.output);
-                            if (outputType === 'markdown') {
-                                const htmlContent = processMarkdown(data.output);
-                                addMessage(htmlContent, false, true);
-                            } else {
-                                addMessage(data.output, false);
-                            }
-                        } else if (typeof data.output === 'object') {
-                            // If output is an object, try to format it
-                            if (Array.isArray(data.output)) {
-                                const formattedData = formatPatientData(data.output);
-                                addMessage(formattedData, false, true);
-                            } else {
-                                // Single object in output
-                                const formattedData = formatPatientData(data.output);
-                                addMessage(formattedData, false, true);
-                            }
-                        }
-                    } else if (data.text) {
-                        // Alternative text field
-                        addMessage(data.text, false);
-                    } else if (data.response) {
-                        // Alternative response field
-                        if (typeof data.response === 'string') {
-                            const respType = detectResponseType(data.response);
-                            if (respType === 'markdown') {
-                                const htmlContent = processMarkdown(data.response);
-                                addMessage(htmlContent, false, true);
-                            } else {
-                                addMessage(data.response, false);
-                            }
+                    if (outputText.includes('|') && outputText.includes('Name')) {
+                        const { patients, additionalInfo } = parsePatientListResponse(outputText);
+                        if (patients.length > 0) {
+                            const formattedHTML = formatPatientCards(patients, additionalInfo);
+                            addMessage(formattedHTML, false, true);
                         } else {
-                            const formattedData = formatPatientData(data.response);
-                            addMessage(formattedData, false, true);
+                            addMessage(outputText.replace(/^Output:\s*/i, ''), false);
                         }
-                    } else if (data.patients) {
-                        // Multiple patients
-                        const formattedData = formatPatientData(data.patients);
-                        addMessage(formattedData, false, true);
-                    } else if (data.patient) {
-                        // Single patient
-                        const formattedData = formatPatientData(data.patient);
-                        addMessage(formattedData, false, true);
-                    } else if (data.data) {
-                        // Sometimes n8n wraps response in 'data' field
-                        if (typeof data.data === 'string') {
-                            addMessage(data.data, false);
-                        } else if (Array.isArray(data.data)) {
-                            const formattedData = formatPatientData(data.data);
-                            addMessage(formattedData, false, true);
-                        } else {
-                            const formattedData = formatPatientData(data.data);
-                            addMessage(formattedData, false, true);
-                        }
-                    } else if (data.result || data.results) {
-                        // Alternative result field
-                        const resultData = data.result || data.results;
-                        if (typeof resultData === 'string') {
-                            addMessage(resultData, false);
-                        } else {
-                            const formattedData = formatPatientData(resultData);
-                            addMessage(formattedData, false, true);
-                        }
-                    } else if (data.markdown) {
-                        // Markdown in JSON
-                        const htmlContent = processMarkdown(data.markdown);
-                        addMessage(htmlContent, false, true);
-                    } else if (data.message) {
-                        // Check if message is markdown
-                        if (detectResponseType(data.message) === 'markdown') {
-                            const htmlContent = processMarkdown(data.message);
-                            addMessage(htmlContent, false, true);
-                        } else {
-                            // Plain text message
-                            addMessage(data.message, false);
-                        }
-                    } else if (data.error) {
-                        // Error message
-                        addMessage(`<div class="error-message">${data.error}</div>`, false, true);
-                    } else if (data.html) {
-                        // Direct HTML response
-                        addMessage(data.html, false, true);
-                    } else if (Array.isArray(data)) {
-                        // Direct array of patients
-                        const formattedData = formatPatientData(data);
-                        addMessage(formattedData, false, true);
                     } else {
-                        // Try to display any available data
-                        const keys = Object.keys(data);
-                        if (keys.length > 0) {
-                            // Check if it looks like a single patient object
-                            const hasPatientFields = keys.some(key => 
-                                ['name', 'Name', 'patient', 'Patient', 'id', 'ID'].includes(key)
-                            );
-                            
-                            if (hasPatientFields) {
-                                // Format as patient
-                                const formattedData = formatPatientData(data);
-                                addMessage(formattedData, false, true);
-                            } else {
-                                // Try to find and display first string value
-                                let displayed = false;
-                                for (const key of keys) {
-                                    if (data[key] && typeof data[key] === 'string' && data[key] !== '') {
-                                        addMessage(data[key], false);
-                                        displayed = true;
-                                        break;
-                                    }
-                                }
-                                
-                                if (!displayed) {
-                                    // Show the raw JSON for debugging
-                                    console.log('Unknown response format:', data);
-                                    addMessage(
-                                        `<div class="patient-card">
-                                            <h3>Response Data</h3>
-                                            <pre style="font-size: 12px; overflow-x: auto;">
-${JSON.stringify(data, null, 2)}
-                                            </pre>
-                                        </div>`,
-                                        false,
-                                        true
-                                    );
-                                }
-                            }
-                        } else {
-                            addMessage('Response received', false);
+                        const cleanedText = outputText.replace(/^Output:\s*/i, '');
+                        addMessage(cleanedText, false);
+                    }
+                } else if (responseData.output) {
+                    addMessage(responseData.output, false);
+                } else if (responseData.message) {
+                    addMessage(responseData.message, false);
+                } else if (responseData.response) {
+                    addMessage(responseData.response, false);
+                } else if (responseData.text) {
+                    addMessage(responseData.text, false);
+                } else {
+                    const keys = Object.keys(responseData);
+                    let displayed = false;
+                    for (const key of keys) {
+                        if (typeof responseData[key] === 'string' && responseData[key]) {
+                            addMessage(responseData[key], false);
+                            displayed = true;
+                            break;
                         }
                     }
-                } else {
-                    // Plain text response
-                    if (data && data !== '') {
-                        addMessage(data, false);
-                    } else {
-                        addMessage('Message sent successfully', false);
+                    if (!displayed) {
+                        addMessage('Response received but no content to display.', false);
                     }
                 }
                 
@@ -1985,20 +943,15 @@ ${JSON.stringify(data, null, 2)}
                 sendButton.disabled = false;
                 console.error('Error:', error);
                 
-                // Add error message with helpful information
                 addMessage(
                     `<div class="error-message">
                         <strong>Connection Error:</strong><br>
-                        Unable to connect to the webhook. This could be due to:
+                        Unable to connect to the webhook. Please check:
                         <ul style="margin-top: 10px; margin-left: 20px;">
-                            <li>CORS policy blocking the request</li>
-                            <li>Webhook URL is incorrect</li>
-                            <li>n8n workflow is not active</li>
+                            <li>Webhook URL is correct</li>
+                            <li>n8n workflow is active</li>
+                            <li>CORS is enabled in n8n</li>
                         </ul>
-                        <br>
-                        <strong>Solution:</strong> Make sure your n8n webhook has CORS enabled and is active.
-                        <br><br>
-                        <small>Error: ${error.message}</small>
                     </div>`,
                     false,
                     true
@@ -2006,27 +959,10 @@ ${JSON.stringify(data, null, 2)}
             }
         }
         
-        function getUserId() {
-            let userId = localStorage.getItem('userId');
-            if (!userId) {
-                // Generate a unique user ID
-                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('userId', userId);
-            }
-            return userId;
-        }
-        
-        // Keep the old function for backward compatibility but use getUserId
-        function getSessionId() {
-            return getUserId();
-        }
-        
         // Initialize
         window.onload = function() {
             chatInput.focus();
             checkConnection();
-            
-            // Check connection every 30 seconds
             setInterval(checkConnection, 30000);
         };
     </script>
