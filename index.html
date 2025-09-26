@@ -59,6 +59,872 @@
             opacity: 0.9;
         }
         
+        .header-buttons {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .header-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .header-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .status-indicator {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #4caf50;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-dot.offline {
+            background-color: #f44336;
+            animation: none;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+            }
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            display: flex;
+            gap: 10px;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .bot .message-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            order: 0;
+        }
+        
+        .user .message-avatar {
+            background: linear-gradient(135deg, #56ccf2 0%, #2f80ed 100%);
+            order: 1;
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+        }
+        
+        .bot .message-content {
+            background: white;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-bottom-left-radius: 4px;
+        }
+        
+        .user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        /* Beautiful table styling */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .styled-table thead tr {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+        }
+        
+        .styled-table tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .styled-table tbody tr:last-of-type {
+            border-bottom: none;
+        }
+        
+        .styled-table tbody tr:hover {
+            background-color: #f8f9ff;
+            transform: scale(1.01);
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Patient card styles */
+        .patient-cards-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+        
+        .patient-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .patient-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+        }
+        
+        .patient-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .patient-info {
+            display: grid;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .patient-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .patient-info-label {
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .patient-info-value {
+            color: #333;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-male {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .badge-female {
+            background-color: #fce4ec;
+            color: #c2185b;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: fit-content;
+        }
+        
+        .typing-indicator.active {
+            display: block;
+        }
+        
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #999;
+            margin: 0 2px;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .chat-input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .chat-input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .chat-input:focus {
+            border-color: #667eea;
+        }
+        
+        .send-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+        
+        .send-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .send-button:active {
+            transform: scale(0.95);
+        }
+        
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .send-button svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-action-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            color: #495057;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-action-btn:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .error-message {
+            background-color: #fee;
+            border-left: 4px solid #f44336;
+            color: #d32f2f;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .success-message {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            color: #2e7d32;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .chat-container {
+                height: 100vh;
+                max-height: none;
+                border-radius: 0;
+            }
+            
+            .message-content {
+                max-width: 85%;
+            }
+            
+            .chat-header h1 {
+                font-size: 1.4em;
+            }
+            
+            .quick-actions {
+                justify-content: center;
+            }
+            
+            .header-buttons {
+                position: static;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="header-buttons">
+                <button class="header-button" onclick="toggleSettings()">⚙️ Settings</button>
+                <button class="header-button" onclick="clearChat()">🗑️ Clear Chat</button>
+            </div>
+            <h1>Patient Information Assistant</h1>
+            <div class="subtitle">AI-Powered Patient Data Retrieval System</div>
+            <div class="status-indicator">
+                <span class="status-dot" id="statusDot"></span>
+                <span id="statusText">Online</span>
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-avatar">AI</div>
+                <div class="message-content">
+                    <p>Hello! I'm your Patient Information Assistant. I can help you:</p>
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Search for patient records</li>
+                        <li>View patient details</li>
+                        <li>List all patients</li>
+                        <li>Filter patients by criteria</li>
+                    </ul>
+                    <p style="margin-top: 10px;">How can I assist you today?</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <input 
+                    type="text" 
+                    class="chat-input" 
+                    id="chatInput" 
+                    placeholder="Type your message here..."
+                    onkeypress="handleKeyPress(event)"
+                >
+                <button class="send-button" id="sendButton" onclick="sendMessage()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="quick-actions">
+                <button class="quick-action-btn" onclick="quickAction('List all patients')">List All Patients</button>
+                <button class="quick-action-btn" onclick="quickAction('Show patient Sanjay Mali')">Search Patient</button>
+                <button class="quick-action-btn" onclick="quickAction('Show recent patients')">Recent Patients</button>
+                <button class="quick-action-btn" onclick="quickAction('Help')">Help</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        let webhookUrl = localStorage.getItem('webhookUrl') || 'https://anantkaya.app.n8n.cloud/webhook/b4b54f90-e90c-4afb-b85f-c0221d39bd3b';
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendButton = document.getElementById('sendButton');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        
+        // Settings management
+        function toggleSettings() {
+            const currentUrl = prompt('Enter n8n Webhook URL:', webhookUrl);
+            if (currentUrl && currentUrl.trim()) {
+                webhookUrl = currentUrl.trim();
+                localStorage.setItem('webhookUrl', webhookUrl);
+                alert('Webhook URL updated successfully!');
+            }
+        }
+        
+        // Clear chat function
+        function clearChat() {
+            if (confirm('Are you sure you want to clear the chat history?')) {
+                chatMessages.innerHTML = `
+                    <div class="message bot">
+                        <div class="message-avatar">AI</div>
+                        <div class="message-content">
+                            <p>Hello! I'm your Patient Information Assistant. I can help you:</p>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Search for patient records</li>
+                                <li>View patient details</li>
+                                <li>List all patients</li>
+                                <li>Filter patients by criteria</li>
+                            </ul>
+                            <p style="margin-top: 10px;">How can I assist you today?</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+        
+        function quickAction(action) {
+            chatInput.value = action;
+            sendMessage();
+        }
+        
+        function getUserId() {
+            let userId = localStorage.getItem('userId');
+            if (!userId) {
+                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('userId', userId);
+            }
+            return userId;
+        }
+        
+        function addMessage(content, isUser = false, isHTML = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = isUser ? 'U' : 'AI';
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            
+            if (isHTML) {
+                messageContent.innerHTML = content;
+            } else {
+                messageContent.textContent = content;
+            }
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(messageContent);
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            return messageContent;
+        }
+        
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.id = 'typingIndicator';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = 'AI';
+            
+            const typingContent = document.createElement('div');
+            typingContent.className = 'typing-indicator active';
+            typingContent.innerHTML = '<span></span><span></span><span></span>';
+            
+            typingDiv.appendChild(avatar);
+            typingDiv.appendChild(typingContent);
+            chatMessages.appendChild(typingDiv);
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        function parsePatientListResponse(text) {
+            // Remove "Output:" prefix if present
+            text = text.replace(/^Output:\s*/i, '');
+            
+            // Parse pipe-separated patient list
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+            const patients = [];
+            
+            for (let line of lines) {
+                // Skip header indicators
+                if (line.includes('---') || line.toLowerCase().includes('here is the list')) continue;
+                
+                // Parse patient data from pipe-separated format
+                const parts = line.split('|').map(p => p.trim()).filter(p => p !== '');
+                
+                if (parts.length >= 3) {
+                    // Check if this is a header row
+                    if (parts[0] === '#' || parts[1] === 'Name') continue;
+                    
+                    const patient = {
+                        number: parts[0],
+                        name: parts[1],
+                        sex: parts[2],
+                        age: parts[3] || '',
+                        mobile: parts[4] || '',
+                        email: parts[5] || '',
+                        history: parts[6] || ''
+                    };
+                    patients.push(patient);
+                }
+            }
+            
+            // Also check for additional text after the table
+            const additionalInfo = lines.find(line => 
+                line.toLowerCase().includes('please specify') || 
+                line.toLowerCase().includes('along with')
+            );
+            
+            return { patients, additionalInfo };
+        }
+        
+        function formatPatientCards(patients, additionalInfo = null) {
+            if (patients.length === 0) return '<p>No patient data found.</p>';
+            
+            let html = '<div class="patient-cards-container">';
+            
+            patients.forEach(patient => {
+                const genderClass = patient.sex?.toLowerCase() === 'female' ? 'badge-female' : 'badge-male';
+                
+                html += `
+                    <div class="patient-card">
+                        <h3>${patient.name}</h3>
+                        <div class="patient-info">
+                `;
+                
+                // Only show fields with values
+                if (patient.sex) {
+                    html += `
+                        <div class="patient-info-row">
+                            <span class="patient-info-label">Gender:</span>
+                            <span class="patient-info-value">
+                                <span class="badge ${genderClass}">${patient.sex}</span>
+                            </span>
+                        </div>
+                    `;
+                }
+                
+                if (patient.age) {
+                    html += `
+                        <div class="patient-info-row">
+                            <span class="patient-info-label">Age:</span>
+                            <span class="patient-info-value">${patient.age} years</span>
+                        </div>
+                    `;
+                }
+                
+                if (patient.mobile) {
+                    html += `
+                        <div class="patient-info-row">
+                            <span class="patient-info-label">Mobile:</span>
+                            <span class="patient-info-value">${patient.mobile}</span>
+                        </div>
+                    `;
+                }
+                
+                if (patient.email && patient.email !== '---') {
+                    html += `
+                        <div class="patient-info-row">
+                            <span class="patient-info-label">Email:</span>
+                            <span class="patient-info-value">${patient.email}</span>
+                        </div>
+                    `;
+                }
+                
+                if (patient.history && patient.history !== '---') {
+                    html += `
+                        <div class="patient-info-row">
+                            <span class="patient-info-label">History:</span>
+                            <span class="patient-info-value">${patient.history}</span>
+                        </div>
+                    `;
+                }
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            if (additionalInfo) {
+                html += `<p style="margin-top: 15px; font-style: italic; color: #666;">${additionalInfo}</p>`;
+            }
+            
+            return html;
+        }
+        
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+            
+            // Disable send button
+            sendButton.disabled = true;
+            
+            // Add user message
+            addMessage(message, true);
+            chatInput.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                // Send message to n8n webhook
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: getUserId(),
+                        input: message
+                    })
+                });
+                
+                removeTypingIndicator();
+                sendButton.disabled = false;
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // Get response data
+                const responseData = await response.json();
+                console.log('Response from n8n:', responseData);
+                
+                // Check if Output field exists (n8n response format)
+                if (responseData.Output) {
+                    const outputText = responseData.Output;
+                    
+                    // Check if this looks like a patient list
+                    if (outputText.includes('|') && outputText.includes('Name')) {
+                        const { patients, additionalInfo } = parsePatientListResponse(outputText);
+                        if (patients.length > 0) {
+                            const formattedHTML = formatPatientCards(patients, additionalInfo);
+                            addMessage(formattedHTML, false, true);
+                        } else {
+                            // If no patients parsed, show the raw text nicely formatted
+                            addMessage(outputText.replace(/^Output:\s*/i, ''), false);
+                        }
+                    } else {
+                        // Regular text response - clean it up
+                        const cleanedText = outputText.replace(/^Output:\s*/i, '');
+                        addMessage(cleanedText, false);
+                    }
+                } else if (responseData.output) {
+                    // Alternative output field (lowercase)
+                    addMessage(responseData.output, false);
+                } else if (responseData.message) {
+                    addMessage(responseData.message, false);
+                } else if (responseData.response) {
+                    addMessage(responseData.response, false);
+                } else if (responseData.text) {
+                    addMessage(responseData.text, false);
+                } else {
+                    // Try to find any text field in the response
+                    const keys = Object.keys(responseData);
+                    let displayed = false;
+                    for (const key of keys) {
+                        if (typeof responseData[key] === 'string' && responseData[key]) {
+                            addMessage(responseData[key], false);
+                            displayed = true;
+                            break;
+                        }
+                    }
+                    if (!displayed) {
+                        addMessage('Response received but no content to display.', false);
+                    }
+                }
+                
+            } catch (error) {
+                removeTypingIndicator();
+                sendButton.disabled = false;
+                console.error('Error:', error);
+                
+                addMessage(
+                    `<div class="error-message">
+                        <strong>Connection Error:</strong><br>
+                        Unable to connect to the webhook. Please check:
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Webhook URL is correct</li>
+                            <li>n8n workflow is active</li>
+                            <li>CORS is enabled in n8n</li>
+                        </ul>
+                    </div>`,
+                    false,
+                    true
+                );
+            }
+        }
+        
+        // Initialize
+        window.onload = function() {
+            chatInput.focus();
+            // Set initial status
+            statusDot.classList.remove('offline');
+            statusText.textContent = 'Online';
+        };
+    </script>
+</body>
+</html>
+    
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .chat-container {
+            width: 100%;
+            max-width: 900px;
+            height: 85vh;
+            max-height: 700px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .chat-header h1 {
+            font-size: 1.8em;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .chat-header .subtitle {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
         .status-indicator {
             position: absolute;
             top: 25px;
