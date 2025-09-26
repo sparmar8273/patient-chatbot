@@ -758,7 +758,99 @@
             }
         }
         
-        function parsePatientListResponse(text) {
+        function formatResponse(text) {
+            // Clean up common formatting issues
+            text = text.trim();
+            
+            // Check if it's a structured response that needs formatting
+            if (text.includes('\n') || text.includes('*') || text.includes('-')) {
+                return formatStructuredText(text);
+            }
+            
+            // For simple text, just return with basic paragraph formatting
+            return `<p>${text}</p>`;
+        }
+        
+        function formatStructuredText(text) {
+            let formatted = text;
+            
+            // Convert markdown-style formatting to HTML
+            // Bold text (**text** or __text__)
+            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/__(.*?)__/g, '<strong>$1</strong>');
+            
+            // Italic text (*text* or _text_)
+            formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            formatted = formatted.replace(/_(.*?)_/g, '<em>$1</em>');
+            
+            // Headers (# ## ###)
+            formatted = formatted.replace(/^### (.*$)/gim, '<h3 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.1em;">$1</h3>');
+            formatted = formatted.replace(/^## (.*$)/gim, '<h2 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.3em;">$1</h2>');
+            formatted = formatted.replace(/^# (.*$)/gim, '<h1 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.5em;">$1</h1>');
+            
+            // Convert line breaks to proper paragraphs
+            const paragraphs = formatted.split('\n\n');
+            formatted = paragraphs.map(para => {
+                if (para.trim() === '') return '';
+                
+                // Check if it's a list
+                if (para.includes('\n-') || para.includes('\n•') || para.includes('\n*')) {
+                    return formatList(para);
+                }
+                
+                // Check if it's already formatted (has HTML tags)
+                if (para.includes('<')) {
+                    return para;
+                }
+                
+                return `<p style="margin: 10px 0; line-height: 1.5;">${para.replace(/\n/g, '<br>')}</p>`;
+            }).join('');
+            
+            return formatted;
+        }
+        
+        function formatList(listText) {
+            const lines = listText.split('\n');
+            let html = '<ul style="margin: 10px 0 10px 20px; line-height: 1.6;">';
+            
+            lines.forEach(line => {
+                line = line.trim();
+                if (line.startsWith('-') || line.startsWith('•') || line.startsWith('*')) {
+                    const item = line.substring(1).trim();
+                    if (item) {
+                        html += `<li style="margin: 5px 0;">${item}</li>`;
+                    }
+                } else if (line && !line.startsWith('-') && !line.startsWith('•') && !line.startsWith('*')) {
+                    // This might be a title or regular text before the list
+                    html = `<p style="margin: 10px 0; font-weight: 600;">${line}</p>` + html;
+                }
+            });
+            
+            html += '</ul>';
+            return html;
+        }
+        
+        function formatPatientResponse(text) {
+            // Check if the response contains patient data indicators
+            const patientKeywords = ['patient', 'name', 'age', 'gender', 'history', 'diagnosis', 'treatment'];
+            const hasPatientData = patientKeywords.some(keyword => 
+                text.toLowerCase().includes(keyword)
+            );
+            
+            if (hasPatientData) {
+                return `
+                    <div style="background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); 
+                                border-radius: 8px; 
+                                padding: 15px; 
+                                border-left: 4px solid #667eea; 
+                                margin: 10px 0;">
+                        ${formatStructuredText(text)}
+                    </div>
+                `;
+            }
+            
+            return formatStructuredText(text);
+        }
             text = text.replace(/^Output:\s*/i, '');
             
             const lines = text.split('\n').filter(line => line.trim() !== '');
@@ -923,34 +1015,49 @@
                             const formattedHTML = formatPatientCards(patients, additionalInfo);
                             addMessage(formattedHTML, false, true);
                         } else {
-                            addMessage(outputText.replace(/^Output:\s*/i, ''), false);
+                            const cleanedText = outputText.replace(/^Output:\s*/i, '');
+                            const formattedResponse = formatPatientResponse(cleanedText);
+                            addMessage(formattedResponse, false, true);
                         }
                     } else {
                         const cleanedText = outputText.replace(/^Output:\s*/i, '');
-                        addMessage(cleanedText, false);
+                        const formattedResponse = formatPatientResponse(cleanedText);
+                        addMessage(formattedResponse, false, true);
                     }
                 } else if (responseData.output) {
                     // Handle the 'output' field from n8n AI Agent
                     const outputText = responseData.output;
                     if (typeof outputText === 'string' && outputText.trim()) {
-                        addMessage(outputText.trim(), false);
+                        const formattedResponse = formatPatientResponse(outputText.trim());
+                        addMessage(formattedResponse, false, true);
                     } else if (typeof outputText === 'object') {
                         // If output is an object, try to format it nicely
-                        addMessage(JSON.stringify(outputText, null, 2), false);
+                        const jsonString = JSON.stringify(outputText, null, 2);
+                        addMessage(`<pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">${jsonString}</pre>`, false, true);
                     } else {
-                        addMessage('Empty response received', false);
+                        addMessage('<p>Empty response received</p>', false, true);
                     }
                 } else if (responseData.message) {
-                    addMessage(responseData.message, false);
+                    const formattedResponse = formatPatientResponse(responseData.message);
+                    addMessage(formattedResponse, false, true);
                 } else if (responseData.response) {
-                    addMessage(responseData.response, false);
+                    const formattedResponse = formatPatientResponse(responseData.response);
+                    addMessage(formattedResponse, false, true);
                 } else if (responseData.text) {
-                    addMessage(responseData.text, false);
+                    const formattedResponse = formatPatientResponse(responseData.text);
+                    addMessage(formattedResponse, false, true);
                 } else if (responseData.data) {
                     // Sometimes data is nested in a 'data' field
-                    addMessage(JSON.stringify(responseData.data), false);
+                    if (typeof responseData.data === 'string') {
+                        const formattedResponse = formatPatientResponse(responseData.data);
+                        addMessage(formattedResponse, false, true);
+                    } else {
+                        const jsonString = JSON.stringify(responseData.data, null, 2);
+                        addMessage(`<pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">${jsonString}</pre>`, false, true);
+                    }
                 } else if (responseData.result) {
-                    addMessage(responseData.result, false);
+                    const formattedResponse = formatPatientResponse(responseData.result);
+                    addMessage(formattedResponse, false, true);
                 } else {
                     // Only show debug info if we truly can't find any response data
                     const keys = Object.keys(responseData);
@@ -959,7 +1066,8 @@
                     // Try to find any meaningful response field
                     for (const key of keys) {
                         if (typeof responseData[key] === 'string' && responseData[key].trim()) {
-                            addMessage(responseData[key].trim(), false);
+                            const formattedResponse = formatPatientResponse(responseData[key].trim());
+                            addMessage(formattedResponse, false, true);
                             displayed = true;
                             break;
                         }
@@ -972,8 +1080,8 @@
                                 <strong>Unable to display response</strong><br>
                                 The webhook returned data but it's not in a recognized format.<br>
                                 <details style="margin-top: 10px;">
-                                    <summary style="cursor: pointer;">View raw response</summary>
-                                    <pre style="font-size: 12px; white-space: pre-wrap; margin-top: 10px; background: #f5f5f5; padding: 10px; border-radius: 4px;">${JSON.stringify(responseData, null, 2)}</pre>
+                                    <summary style="cursor: pointer; color: #667eea; font-weight: 500;">View raw response</summary>
+                                    <pre style="font-size: 12px; white-space: pre-wrap; margin-top: 10px; background: #f5f5f5; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">${JSON.stringify(responseData, null, 2)}</pre>
                                 </details>
                             </div>`,
                             false,
