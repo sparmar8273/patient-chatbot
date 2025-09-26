@@ -851,6 +851,8 @@
             
             return formatStructuredText(text);
         }
+        
+        function parsePatientListResponse(text) {
             text = text.replace(/^Output:\s*/i, '');
             
             const lines = text.split('\n').filter(line => line.trim() !== '');
