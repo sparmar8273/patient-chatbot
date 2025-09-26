@@ -994,8 +994,14 @@
                 const responseData = await response.json();
                 console.log('Response from n8n:', responseData);
                 
+                // Handle array responses (n8n sometimes returns arrays)
+                let processedData = responseData;
+                if (Array.isArray(responseData) && responseData.length > 0) {
+                    processedData = responseData[0]; // Use the first item in the array
+                }
+                
                 // Only show debug info if there are actual issues, not for normal responses
-                if (Object.keys(responseData).length === 0) {
+                if (Object.keys(processedData).length === 0) {
                     addMessage(
                         `<div class="error-message">
                             <strong>Debug Info:</strong><br>
@@ -1008,8 +1014,8 @@
                     return;
                 }
                 
-                if (responseData.Output) {
-                    const outputText = responseData.Output;
+                if (processedData.Output) {
+                    const outputText = processedData.Output;
                     
                     if (outputText.includes('|') && outputText.includes('Name')) {
                         const { patients, additionalInfo } = parsePatientListResponse(outputText);
@@ -1026,9 +1032,9 @@
                         const formattedResponse = formatPatientResponse(cleanedText);
                         addMessage(formattedResponse, false, true);
                     }
-                } else if (responseData.output) {
+                } else if (processedData.output) {
                     // Handle the 'output' field from n8n AI Agent
-                    const outputText = responseData.output;
+                    const outputText = processedData.output;
                     if (typeof outputText === 'string' && outputText.trim()) {
                         const formattedResponse = formatPatientResponse(outputText.trim());
                         addMessage(formattedResponse, false, true);
@@ -1039,36 +1045,36 @@
                     } else {
                         addMessage('<p>Empty response received</p>', false, true);
                     }
-                } else if (responseData.message) {
-                    const formattedResponse = formatPatientResponse(responseData.message);
+                } else if (processedData.message) {
+                    const formattedResponse = formatPatientResponse(processedData.message);
                     addMessage(formattedResponse, false, true);
-                } else if (responseData.response) {
-                    const formattedResponse = formatPatientResponse(responseData.response);
+                } else if (processedData.response) {
+                    const formattedResponse = formatPatientResponse(processedData.response);
                     addMessage(formattedResponse, false, true);
-                } else if (responseData.text) {
-                    const formattedResponse = formatPatientResponse(responseData.text);
+                } else if (processedData.text) {
+                    const formattedResponse = formatPatientResponse(processedData.text);
                     addMessage(formattedResponse, false, true);
-                } else if (responseData.data) {
+                } else if (processedData.data) {
                     // Sometimes data is nested in a 'data' field
-                    if (typeof responseData.data === 'string') {
-                        const formattedResponse = formatPatientResponse(responseData.data);
+                    if (typeof processedData.data === 'string') {
+                        const formattedResponse = formatPatientResponse(processedData.data);
                         addMessage(formattedResponse, false, true);
                     } else {
-                        const jsonString = JSON.stringify(responseData.data, null, 2);
+                        const jsonString = JSON.stringify(processedData.data, null, 2);
                         addMessage(`<pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">${jsonString}</pre>`, false, true);
                     }
-                } else if (responseData.result) {
-                    const formattedResponse = formatPatientResponse(responseData.result);
+                } else if (processedData.result) {
+                    const formattedResponse = formatPatientResponse(processedData.result);
                     addMessage(formattedResponse, false, true);
                 } else {
                     // Only show debug info if we truly can't find any response data
-                    const keys = Object.keys(responseData);
+                    const keys = Object.keys(processedData);
                     let displayed = false;
                     
                     // Try to find any meaningful response field
                     for (const key of keys) {
-                        if (typeof responseData[key] === 'string' && responseData[key].trim()) {
-                            const formattedResponse = formatPatientResponse(responseData[key].trim());
+                        if (typeof processedData[key] === 'string' && processedData[key].trim()) {
+                            const formattedResponse = formatPatientResponse(processedData[key].trim());
                             addMessage(formattedResponse, false, true);
                             displayed = true;
                             break;
